@@ -1,33 +1,20 @@
 const heroImage = document.querySelector('.home_hero_image-container');
 
-let progress = 0;
-let animationFinished = false;
+let triggered = false;
 
 document.body.classList.add('scroll-lock');
 
-// Get starting size
-const startHeight = heroImage.offsetHeight;
-const startWidth = heroImage.offsetWidth;
-
-const maxHeight = window.innerHeight;  // 100svh
-const maxWidth = window.innerWidth;    // 100svw
-
 window.addEventListener('wheel', (e) => {
-  if (animationFinished) return;
+  if (triggered) return;
 
-  e.preventDefault();
+  if (e.deltaY > 0) {  // scrolling down
+    triggered = true;
 
-  progress += e.deltaY * 0.0015;
-  progress = Math.min(Math.max(progress, 0), 1);
+    heroImage.style.height = '100svh';
+    heroImage.style.width = '100svw';
 
-  const newHeight = startHeight + (maxHeight - startHeight) * progress;
-  const newWidth = startWidth + (maxWidth - startWidth) * progress;
-
-  heroImage.style.height = newHeight + 'px';
-  heroImage.style.width = newWidth + 'px';
-
-  if (progress >= 1) {
-    animationFinished = true;
-    document.body.classList.remove('scroll-lock');
+    setTimeout(() => {
+      document.body.classList.remove('scroll-lock');
+    }, 600); // must match CSS transition time
   }
 }, { passive: false });
