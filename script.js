@@ -1,20 +1,38 @@
 const heroImage = document.querySelector('.home_hero_image-container');
 
-let triggered = false;
-
-document.body.classList.add('scroll-lock');
+let isFullscreen = false;
+let isAnimating = false;
 
 window.addEventListener('wheel', (e) => {
-  if (triggered) return;
+  if (isAnimating) return;
 
-  if (e.deltaY > 0) {  // scrolling down
-    triggered = true;
+  // SCROLL DOWN → EXPAND
+  if (e.deltaY > 0 && !isFullscreen) {
+    e.preventDefault();
+    isAnimating = true;
 
-    heroImage.style.height = '100svh';
-    heroImage.style.width = '100svw';
+    document.body.classList.add('scroll-lock');
+    heroImage.classList.add('fullscreen');
 
     setTimeout(() => {
       document.body.classList.remove('scroll-lock');
-    }, 600); // must match CSS transition time
+      isFullscreen = true;
+      isAnimating = false;
+    }, 600); // match CSS transition
   }
+
+  // SCROLL UP → SHRINK
+  if (e.deltaY < 0 && isFullscreen && window.scrollY === 0) {
+    e.preventDefault();
+    isAnimating = true;
+
+    document.body.classList.add('scroll-lock');
+    heroImage.classList.remove('fullscreen');
+
+    setTimeout(() => {
+      isFullscreen = false;
+      isAnimating = false;
+    }, 600);
+  }
+
 }, { passive: false });
