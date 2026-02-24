@@ -1,27 +1,32 @@
-const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 
+let progress = 0;
 let animationFinished = false;
-let maxScale = 1.3; // how big it grows
-let scrollAmount = 0;
 
 document.body.classList.add('scroll-lock');
+
+// Get starting size
+const startHeight = heroImage.offsetHeight;
+const startWidth = heroImage.offsetWidth;
+
+const maxHeight = window.innerHeight;  // 100svh
+const maxWidth = window.innerWidth;    // 100svw
 
 window.addEventListener('wheel', (e) => {
   if (animationFinished) return;
 
-  e.preventDefault(); // stop normal scroll
+  e.preventDefault();
 
-  scrollAmount += e.deltaY * 0.0015;
+  progress += e.deltaY * 0.0015;
+  progress = Math.min(Math.max(progress, 0), 1);
 
-  // clamp between 0 and 1
-  scrollAmount = Math.min(Math.max(scrollAmount, 0), 1);
+  const newHeight = startHeight + (maxHeight - startHeight) * progress;
+  const newWidth = startWidth + (maxWidth - startWidth) * progress;
 
-  const scaleValue = 1 + scrollAmount * (maxScale - 1);
-  heroImage.style.transform = `scale(${scaleValue})`;
+  heroImage.style.height = newHeight + 'px';
+  heroImage.style.width = newWidth + 'px';
 
-  // When animation completes
-  if (scrollAmount >= 1) {
+  if (progress >= 1) {
     animationFinished = true;
     document.body.classList.remove('scroll-lock');
   }
