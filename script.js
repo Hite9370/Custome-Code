@@ -1,3 +1,4 @@
+
 /*const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 const heroText = document.querySelector('.hero_text_container');
@@ -15,7 +16,7 @@ window.addEventListener('wheel', (e) => {
     e.preventDefault();
     isAnimating = true;
 
-    document.body.classList.add('scroll-lock');
+    document.body.classList.add('scroll-lock'); // LOCK SCROLL
 
     heroImage.classList.add('fullscreen');
     heroSection.classList.add('hero-front');
@@ -24,15 +25,16 @@ window.addEventListener('wheel', (e) => {
     setTimeout(() => {
 
       // Extra delay before text appears (400ms)
-      setTimeout(() => {
-        heroText.classList.add('show-text');
+      heroText.classList.add('show-text');
 
-        document.body.classList.remove('scroll-lock');
+      // Wait for text fade-in (500ms) before unlocking scroll
+      setTimeout(() => {
+        document.body.classList.remove('scroll-lock'); // UNLOCK SCROLL after full animation
         isFullscreen = true;
         isAnimating = false;
-      }, 400);
+      }, 500); // match text fade duration
 
-    }, 600);
+    }, 600); // match image transition
   }
 
   /* =========================
@@ -54,6 +56,7 @@ window.addEventListener('wheel', (e) => {
       heroImage.classList.remove('fullscreen');
       heroSection.classList.remove('hero-front');
 
+      // Wait for image shrink (600ms) before unlocking scroll
       setTimeout(() => {
         document.body.classList.remove('scroll-lock');
         isFullscreen = false;
@@ -63,7 +66,10 @@ window.addEventListener('wheel', (e) => {
     }, 500);
   }
 
-}, { passive: false });*/
+}, { passive: false }); */
+
+
+
 
 
 
@@ -92,15 +98,17 @@ window.addEventListener('wheel', (e) => {
     // Wait for image animation (600ms)
     setTimeout(() => {
 
-      // Extra delay before text appears (400ms)
-      heroText.classList.add('show-text');
-
-      // Wait for text fade-in (500ms) before unlocking scroll
+      // 🔹 ADD EXTRA DELAY BEFORE TEXT APPEARS (400ms)
       setTimeout(() => {
-        document.body.classList.remove('scroll-lock'); // UNLOCK SCROLL after full animation
-        isFullscreen = true;
-        isAnimating = false;
-      }, 500); // match text fade duration
+        heroText.classList.add('show-text');
+
+        // Wait for text fade-in (500ms) before unlocking scroll
+        setTimeout(() => {
+          document.body.classList.remove('scroll-lock'); // UNLOCK SCROLL after full animation
+          isFullscreen = true;
+          isAnimating = false;
+        }, 500); // match text fade duration
+      }, 400); // delay before showing text
 
     }, 600); // match image transition
   }
