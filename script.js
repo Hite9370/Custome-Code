@@ -88,31 +88,49 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
-let scrollCooldown = false;
-
-document.body.classList.add('scroll-lock');
+let scrollLocked = true; // start locked
 
 /* =========================
-   DESKTOP
+   SCROLL LOCK SYSTEM
+========================= */
+function lockScroll() {
+  if (scrollLocked) return;
+  document.body.classList.add('scroll-lock');
+  scrollLocked = true;
+}
+
+function unlockScroll() {
+  if (!scrollLocked) return;
+  document.body.classList.remove('scroll-lock');
+  scrollLocked = false;
+}
+
+lockScroll();
+
+/* =========================
+   DESKTOP (WHEEL)
 ========================= */
 window.addEventListener('wheel', (e) => {
-  if (isAnimating || scrollCooldown) {
+
+  if (isAnimating) {
     e.preventDefault();
     return;
   }
 
   handleScroll(e.deltaY);
+
 }, { passive: false });
 
 /* =========================
-   MOBILE
+   MOBILE (TOUCH)
 ========================= */
 window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
-  if (isAnimating || scrollCooldown) {
+
+  if (isAnimating) {
     e.preventDefault();
     return;
   }
@@ -120,7 +138,15 @@ window.addEventListener('touchmove', (e) => {
   const touchEndY = e.touches[0].clientY;
   const deltaY = touchStartY - touchEndY;
 
+  // 🔥 Force reverse if pulling down at top
+  if (isFullscreen && window.scrollY <= 0 && deltaY < -15) {
+    handleScroll(-100);
+    e.preventDefault();
+    return;
+  }
+
   handleScroll(deltaY);
+
 }, { passive: false });
 
 /* =========================
@@ -128,54 +154,60 @@ window.addEventListener('touchmove', (e) => {
 ========================= */
 function handleScroll(deltaY) {
 
-  if (Math.abs(deltaY) < 60) return;
+  if (isAnimating) return;
 
-  /* SCROLL DOWN → EXPAND */
+  // Prevent micro scroll triggers
+  if (Math.abs(deltaY) < 50) return;
+
+  /* ======================
+     SCROLL DOWN → EXPAND
+  ====================== */
   if (deltaY > 0 && !isFullscreen) {
-    startCooldown();
+
     isAnimating = true;
+    lockScroll();
 
     heroImage.classList.add('fullscreen');
     heroSection.classList.add('hero-front');
     navbar.classList.add('navbar-bg');
 
-    setTimeout(() => {
-      heroText.classList.add('show-text');
-      isFullscreen = true;
-      isAnimating = false;
-      document.body.classList.remove('scroll-lock');
-    }, 800);
+    // Wait for CSS transition to finish
+    heroImage.addEventListener('transitionend', expandComplete, { once: true });
   }
 
-  /* SCROLL UP → SHRINK */
+  /* ======================
+     SCROLL UP → SHRINK
+  ====================== */
   if (deltaY < 0 && isFullscreen) {
 
-    startCooldown();
     isAnimating = true;
-
-    document.body.classList.add('scroll-lock'); // lock immediately
+    lockScroll();
 
     heroText.classList.remove('show-text');
 
-    setTimeout(() => {
-      heroImage.classList.remove('fullscreen');
-      heroSection.classList.remove('hero-front');
-      navbar.classList.remove('navbar-bg');
+    heroImage.classList.remove('fullscreen');
+    heroSection.classList.remove('hero-front');
+    navbar.classList.remove('navbar-bg');
 
-      isFullscreen = false;
-      isAnimating = false;
-
-      document.body.classList.remove('scroll-lock'); // unlock after animation
-    }, 600);
+    heroImage.addEventListener('transitionend', shrinkComplete, { once: true });
   }
 }
 
 /* =========================
-   SCROLL COOLDOWN
+   ANIMATION COMPLETE
 ========================= */
-function startCooldown() {
-  scrollCooldown = true;
-  setTimeout(() => {
-    scrollCooldown = false;
-  }, 1000);
+function expandComplete() {
+  heroText.classList.add('show-text');
+
+  isFullscreen = true;
+  isAnimating = false;
+
+  unlockScroll();
+}
+
+function shrinkComplete() {
+  isFullscreen = false;
+  isAnimating = false;
+
+  unlockScroll();
 }
