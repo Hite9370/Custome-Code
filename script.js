@@ -80,7 +80,6 @@ function handleScroll(deltaY) {
   }
 }*/
 
-
 const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 const heroText = document.querySelector('.hero_text_container');
@@ -131,9 +130,7 @@ function handleScroll(deltaY) {
 
   if (Math.abs(deltaY) < 60) return;
 
-  /* ======================
-     SCROLL DOWN → EXPAND
-  ====================== */
+  /* SCROLL DOWN → EXPAND */
   if (deltaY > 0 && !isFullscreen) {
     startCooldown();
     isAnimating = true;
@@ -147,33 +144,30 @@ function handleScroll(deltaY) {
       isFullscreen = true;
       isAnimating = false;
       document.body.classList.remove('scroll-lock');
-    }, 800); // match CSS
+    }, 800);
   }
 
-  /* ======================
-     SCROLL UP → SHRINK
-  ====================== */
-if (deltaY < 0 && isFullscreen) {
+  /* SCROLL UP → SHRINK */
+  if (deltaY < 0 && isFullscreen) {
 
-  isAnimating = true;
+    startCooldown();
+    isAnimating = true;
 
-  // ✅ ADD THIS HERE
-  document.body.classList.add('scroll-lock');
+    document.body.classList.add('scroll-lock'); // lock immediately
 
-  heroText.classList.remove('show-text');
+    heroText.classList.remove('show-text');
 
-  setTimeout(() => {
-    heroImage.classList.remove('fullscreen');
-    heroSection.classList.remove('hero-front');
-    navbar.classList.remove('navbar-bg');
+    setTimeout(() => {
+      heroImage.classList.remove('fullscreen');
+      heroSection.classList.remove('hero-front');
+      navbar.classList.remove('navbar-bg');
 
-    isFullscreen = false;
-    isAnimating = false;
+      isFullscreen = false;
+      isAnimating = false;
 
-    // unlock AFTER animation completes
-    document.body.classList.remove('scroll-lock');
-
-  }, 600); // match your CSS timing
+      document.body.classList.remove('scroll-lock'); // unlock after animation
+    }, 600);
+  }
 }
 
 /* =========================
@@ -183,5 +177,5 @@ function startCooldown() {
   scrollCooldown = true;
   setTimeout(() => {
     scrollCooldown = false;
-  }, 1000); // prevents fast spam scroll
+  }, 1000);
 }
