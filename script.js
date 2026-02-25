@@ -63,7 +63,7 @@ window.addEventListener('touchend', (e) => {
 function handleScroll(deltaY) {
   if (isAnimating) return;
 
-  /* SCROLL DOWN → EXPAND */
+  /* SCROLL DOWN → EXPAND 
   if (deltaY > 50 && !isFullscreen) {
     expandHero();
   }
