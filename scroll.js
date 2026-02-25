@@ -6,8 +6,10 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
-let hasScrolledDown = false;
 
+/* =========================
+   NAVBAR BG OBSERVER
+========================= */
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach(entry => {
@@ -18,27 +20,13 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  { threshold: [0.5] }
+  { threshold: 0.5 }
 );
 
 observer.observe(heroSection);
 
 /* =========================
-   TRACK USER SCROLL
-========================= */
-window.addEventListener('scroll', () => {
-  if (isFullscreen && window.scrollY > 80) {
-    hasScrolledDown = true;
-  }
-
-  // ⭐ Smooth shrink when reaching top
-  if (isFullscreen && !isAnimating && window.scrollY <= 0 && hasScrolledDown) {
-    shrinkHero();
-  }
-});
-
-/* =========================
-   FIRST SCROLL DETECTION
+   FIRST SCROLL TO EXPAND
 ========================= */
 window.addEventListener('wheel', (e) => {
   if (!isFullscreen && !isAnimating && e.deltaY > 50) expandHero();
@@ -51,12 +39,20 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchend', (e) => {
   const touchEndY = e.changedTouches[0].clientY;
   const deltaY = touchStartY - touchEndY;
-
   if (!isFullscreen && !isAnimating && deltaY > 50) expandHero();
 }, { passive: true });
 
 /* =========================
-   EXPAND FUNCTION
+   SHRINK WHEN SCROLL REACHES TOP
+========================= */
+window.addEventListener('scroll', () => {
+  if (isFullscreen && !isAnimating && window.scrollY === 0) {
+    shrinkHero();
+  }
+});
+
+/* =========================
+   EXPAND
 ========================= */
 function expandHero() {
   if (isAnimating) return;
@@ -74,13 +70,12 @@ function expandHero() {
       document.body.classList.remove('scroll-lock');
       isFullscreen = true;
       isAnimating = false;
-      hasScrolledDown = false;
     }, 500);
   }, 600);
 }
 
 /* =========================
-   SHRINK FUNCTION
+   SHRINK
 ========================= */
 function shrinkHero() {
   if (isAnimating) return;
@@ -97,7 +92,6 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
-      hasScrolledDown = false;
       document.body.classList.remove('scroll-lock');
     }, 400);
   }, 200);
