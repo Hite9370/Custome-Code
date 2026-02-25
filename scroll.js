@@ -6,10 +6,10 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
+let hasScrolledDown = false; // ⭐ important flag
 
-/* =========================
-   NAVBAR BG (50%)
-========================= */
+document.body.classList.add('scroll-lock');
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach(entry => {
@@ -20,23 +20,24 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.5 }
+  { threshold: [0.5] }
 );
 
 observer.observe(heroSection);
 
-/* =========================
-   FIRST SCROLL DETECTION (DESKTOP)
-========================= */
-window.addEventListener('wheel', (e) => {
-  if (!isFullscreen && !isAnimating && e.deltaY > 40) {
-    expandHero();
-  }
-}, { passive: true });
 
-/* =========================
-   FIRST SCROLL DETECTION (MOBILE)
-========================= */
+window.addEventListener('scroll', () => {
+  if (isFullscreen && window.scrollY > 80) {
+    hasScrolledDown = true; // user actually explored page
+  }
+});
+
+
+window.addEventListener('wheel', (e) => {
+  handleScroll(e.deltaY);
+}, { passive: false });
+
+
 window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
@@ -44,55 +45,54 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchend', (e) => {
   const touchEndY = e.changedTouches[0].clientY;
   const deltaY = touchStartY - touchEndY;
-
-  if (!isFullscreen && !isAnimating && deltaY > 50) {
-    expandHero();
-  }
+  handleScroll(deltaY);
 }, { passive: true });
 
-/* =========================
-   SHRINK WHEN BACK TO TOP
-========================= */
-window.addEventListener('scroll', () => {
-  if (isFullscreen && !isAnimating && window.scrollY <= 0) {
+
+function handleScroll(deltaY) {
+  if (isAnimating) return;
+
+  /* SCROLL DOWN → EXPAND */
+  if (deltaY > 50 && !isFullscreen) {
+    expandHero();
+  }
+
+  /* SCROLL UP → SHRINK */
+  if (
+    deltaY < -50 &&
+    isFullscreen &&
+    window.scrollY <= 2 &&
+    hasScrolledDown   // ⭐ only shrink if user actually scrolled page
+  ) {
     shrinkHero();
   }
-});
+}
 
-/* =========================
-   EXPAND
-========================= */
+
 function expandHero() {
-  if (isAnimating) return;
   isAnimating = true;
-
-  // Add scroll lock only during animation
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
   heroSection.classList.add('hero-front');
 
   setTimeout(() => {
-    heroText.classList.add('show-text');
-
     setTimeout(() => {
-      // Remove scroll lock after animation finishes
-      document.body.classList.remove('scroll-lock');
-      isFullscreen = true;
-      isAnimating = false;
-    }, 500);
+      heroText.classList.add('show-text');
 
+      setTimeout(() => {
+        document.body.classList.remove('scroll-lock');
+        isFullscreen = true;
+        isAnimating = false;
+        hasScrolledDown = false; // reset
+      }, 500);
+    }, 400);
   }, 600);
 }
 
-/* =========================
-   SHRINK
-========================= */
-function shrinkHero() {
-  if (isAnimating) return;
-  isAnimating = true;
 
-  // Add scroll lock only during shrink animation
+function shrinkHero() {
+  isAnimating = true;
   document.body.classList.add('scroll-lock');
 
   heroText.classList.remove('show-text');
@@ -104,10 +104,7 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
-
-      // Remove scroll lock at the very end
-      document.body.classList.remove('scroll-lock');
-    }, 400);
-
+      hasScrolledDown = false; // reset again
+    }, 300);
   }, 200);
 }
