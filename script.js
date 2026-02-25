@@ -55,8 +55,8 @@ function handleScroll(deltaY) {
           isAnimating = false;
         }, 500);
       }, 400);
-       navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
     }, 600);
+   navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
   }
 
   /* SCROLL UP → SHRINK */
