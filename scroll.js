@@ -6,9 +6,7 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
-let hasScrolledDown = false; // ⭐ important flag
-
-document.body.classList.add('scroll-lock');
+let hasScrolledDown = false;
 
 const observer = new IntersectionObserver(
   (entries) => {
@@ -25,18 +23,26 @@ const observer = new IntersectionObserver(
 
 observer.observe(heroSection);
 
-
+/* =========================
+   TRACK USER SCROLL
+========================= */
 window.addEventListener('scroll', () => {
   if (isFullscreen && window.scrollY > 80) {
-    hasScrolledDown = true; // user actually explored page
+    hasScrolledDown = true;
+  }
+
+  // ⭐ Smooth shrink when reaching top
+  if (isFullscreen && !isAnimating && window.scrollY <= 0 && hasScrolledDown) {
+    shrinkHero();
   }
 });
 
-
+/* =========================
+   FIRST SCROLL DETECTION
+========================= */
 window.addEventListener('wheel', (e) => {
-  handleScroll(e.deltaY);
-}, { passive: false });
-
+  if (!isFullscreen && !isAnimating && e.deltaY > 50) expandHero();
+}, { passive: true });
 
 window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
@@ -45,54 +51,41 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchend', (e) => {
   const touchEndY = e.changedTouches[0].clientY;
   const deltaY = touchStartY - touchEndY;
-  handleScroll(deltaY);
+
+  if (!isFullscreen && !isAnimating && deltaY > 50) expandHero();
 }, { passive: true });
 
-
-function handleScroll(deltaY) {
-  if (isAnimating) return;
-
-  /* SCROLL DOWN → EXPAND */
-  if (deltaY > 50 && !isFullscreen) {
-    expandHero();
-  }
-
-  /* SCROLL UP → SHRINK */
-  if (
-    deltaY < -50 &&
-    isFullscreen &&
-    window.scrollY <= 2 &&
-    hasScrolledDown   // ⭐ only shrink if user actually scrolled page
-  ) {
-    shrinkHero();
-  }
-}
-
-
+/* =========================
+   EXPAND FUNCTION
+========================= */
 function expandHero() {
+  if (isAnimating) return;
   isAnimating = true;
+
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
   heroSection.classList.add('hero-front');
 
   setTimeout(() => {
-    setTimeout(() => {
-      heroText.classList.add('show-text');
+    heroText.classList.add('show-text');
 
-      setTimeout(() => {
-        document.body.classList.remove('scroll-lock');
-        isFullscreen = true;
-        isAnimating = false;
-        hasScrolledDown = false; // reset
-      }, 500);
-    }, 400);
+    setTimeout(() => {
+      document.body.classList.remove('scroll-lock');
+      isFullscreen = true;
+      isAnimating = false;
+      hasScrolledDown = false;
+    }, 500);
   }, 600);
 }
 
-
+/* =========================
+   SHRINK FUNCTION
+========================= */
 function shrinkHero() {
+  if (isAnimating) return;
   isAnimating = true;
+
   document.body.classList.add('scroll-lock');
 
   heroText.classList.remove('show-text');
@@ -104,7 +97,8 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
-      hasScrolledDown = false; // reset again
-    }, 300);
+      hasScrolledDown = false;
+      document.body.classList.remove('scroll-lock');
+    }, 400);
   }, 200);
 }
