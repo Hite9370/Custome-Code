@@ -54,8 +54,8 @@ function handleScroll(deltaY) {
           isFullscreen = true;
           isAnimating = false;
         }, 500);
-       navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
       }, 400);
+       navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
     }, 600);
   }
 
