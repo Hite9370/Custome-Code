@@ -7,8 +7,6 @@ let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
 
-document.body.classList.add('scroll-lock');
-
 /* =========================
    NAVBAR BG (50%)
 ========================= */
@@ -65,8 +63,10 @@ window.addEventListener('scroll', () => {
    EXPAND
 ========================= */
 function expandHero() {
+  if (isAnimating) return;
   isAnimating = true;
 
+  // Add scroll lock only during animation
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
@@ -76,6 +76,7 @@ function expandHero() {
     heroText.classList.add('show-text');
 
     setTimeout(() => {
+      // Remove scroll lock after animation finishes
       document.body.classList.remove('scroll-lock');
       isFullscreen = true;
       isAnimating = false;
@@ -88,10 +89,11 @@ function expandHero() {
    SHRINK
 ========================= */
 function shrinkHero() {
+  if (isAnimating) return;
   isAnimating = true;
 
+  // Add scroll lock only during shrink animation
   document.body.classList.add('scroll-lock');
-  window.scrollTo(0, 0);
 
   heroText.classList.remove('show-text');
 
@@ -102,6 +104,8 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
+
+      // Remove scroll lock at the very end
       document.body.classList.remove('scroll-lock');
     }, 400);
 
