@@ -317,11 +317,12 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
+let hasScrolledDown = false; // ⭐ important flag
 
 document.body.classList.add('scroll-lock');
 
 /* =========================
-   NAVBAR BG ON 50% SCROLL
+   NAVBAR BG (50%)
 ========================= */
 const observer = new IntersectionObserver(
   (entries) => {
@@ -339,14 +340,23 @@ const observer = new IntersectionObserver(
 observer.observe(heroSection);
 
 /* =========================
-   DESKTOP (Wheel)
+   TRACK REAL PAGE SCROLL
+========================= */
+window.addEventListener('scroll', () => {
+  if (isFullscreen && window.scrollY > 80) {
+    hasScrolledDown = true; // user actually explored page
+  }
+});
+
+/* =========================
+   DESKTOP
 ========================= */
 window.addEventListener('wheel', (e) => {
   handleScroll(e.deltaY);
 }, { passive: false });
 
 /* =========================
-   MOBILE TOUCH (FIXED)
+   MOBILE
 ========================= */
 window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
@@ -355,7 +365,6 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchend', (e) => {
   const touchEndY = e.changedTouches[0].clientY;
   const deltaY = touchStartY - touchEndY;
-
   handleScroll(deltaY);
 }, { passive: true });
 
@@ -372,9 +381,10 @@ function handleScroll(deltaY) {
 
   /* SCROLL UP → SHRINK */
   if (
-    deltaY < -60 &&          // strong upward gesture
+    deltaY < -50 &&
     isFullscreen &&
-    window.scrollY <= 2      // really at the top
+    window.scrollY <= 2 &&
+    hasScrolledDown   // ⭐ only shrink if user actually scrolled page
   ) {
     shrinkHero();
   }
@@ -398,6 +408,7 @@ function expandHero() {
         document.body.classList.remove('scroll-lock');
         isFullscreen = true;
         isAnimating = false;
+        hasScrolledDown = false; // reset
       }, 500);
     }, 400);
   }, 600);
@@ -419,7 +430,7 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
-      document.body.classList.add('scroll-lock');
+      hasScrolledDown = false; // reset again
     }, 300);
   }, 200);
 }
