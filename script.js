@@ -4,76 +4,82 @@ const heroText = document.querySelector('.hero_text_container');
 
 let isFullscreen = false;
 let isAnimating = false;
+let touchStartY = 0;
 
+/* =========================
+   DESKTOP (Wheel)
+========================= 
 window.addEventListener('wheel', (e) => {
+  handleScroll(e.deltaY);
+}, { passive: false });
+
+/* =========================
+   MOBILE (Touch)
+========================= 
+window.addEventListener('touchstart', (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  let touchEndY = e.touches[0].clientY;
+  let deltaY = touchStartY - touchEndY;
+
+  handleScroll(deltaY);
+}, { passive: false });
+
+/* =========================
+   MAIN LOGIC
+========================= 
+function handleScroll(deltaY) {
   if (isAnimating) return;
 
-  /* =========================
-     SCROLL DOWN → EXPAND
-  ========================== 
-  if (e.deltaY > 0 && !isFullscreen) {
-    e.preventDefault();
+  /* SCROLL DOWN → EXPAND 
+  if (deltaY > 30 && !isFullscreen) {
     isAnimating = true;
-
-    document.body.classList.add('scroll-lock'); // LOCK SCROLL
+    document.body.classList.add('scroll-lock');
 
     heroImage.classList.add('fullscreen');
     heroSection.classList.add('hero-front');
 
-    // Wait for image animation (600ms)
     setTimeout(() => {
-
-      // 🔹 ADD EXTRA DELAY BEFORE TEXT APPEARS (400ms)
       setTimeout(() => {
         heroText.classList.add('show-text');
 
-        // Wait for text fade-in (500ms) before unlocking scroll
         setTimeout(() => {
-          document.body.classList.remove('scroll-lock'); // UNLOCK SCROLL after full animation
+          document.body.classList.remove('scroll-lock');
           isFullscreen = true;
           isAnimating = false;
-        }, 500); // match text fade duration
-      }, 400); // delay before showing text
-
-    }, 600); // match image transition
+        }, 500);
+      }, 400);
+    }, 600);
   }
 
-  /* =========================
-     SCROLL UP → SHRINK
-  ========================== 
-  if (e.deltaY < 0 && isFullscreen && window.scrollY === 0) {
-    e.preventDefault();
+  /* SCROLL UP → SHRINK 
+  if (deltaY < -30 && isFullscreen && window.scrollY === 0) {
     isAnimating = true;
-
     document.body.classList.add('scroll-lock');
 
-    // 1️⃣ Hide text first
     heroText.classList.remove('show-text');
 
-    // Wait for text fade out (500ms)
     setTimeout(() => {
-
-      // 2️⃣ Shrink image
       heroImage.classList.remove('fullscreen');
       heroSection.classList.remove('hero-front');
 
-      // Wait for image shrink (600ms) before unlocking scroll
       setTimeout(() => {
         document.body.classList.remove('scroll-lock');
         isFullscreen = false;
         isAnimating = false;
       }, 600);
-
     }, 500);
   }
-
-}, { passive: false });*/
+}*/
 
 
 
 const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 const heroText = document.querySelector('.hero_text_container');
+const navbar = document.querySelector('.navbar'); // ← your navbar class
 
 let isFullscreen = false;
 let isAnimating = false;
@@ -120,6 +126,7 @@ function handleScroll(deltaY) {
 
         setTimeout(() => {
           document.body.classList.remove('scroll-lock');
+          navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE
           isFullscreen = true;
           isAnimating = false;
         }, 500);
@@ -140,6 +147,7 @@ function handleScroll(deltaY) {
 
       setTimeout(() => {
         document.body.classList.remove('scroll-lock');
+        navbar.classList.remove('navbar-bg'); // ✅ REMOVE BG HERE
         isFullscreen = false;
         isAnimating = false;
       }, 600);
