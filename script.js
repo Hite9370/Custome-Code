@@ -75,7 +75,7 @@ function handleScroll(deltaY) {
         navbar.classList.remove('navbar-bg'); // ✅ REMOVE BG HERE
         isFullscreen = false;
         isAnimating = false;
-      }, 600);
-    }, 500);
+      }, 300);
+    }, 200);
   }
 }
