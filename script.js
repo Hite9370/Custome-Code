@@ -54,7 +54,7 @@ function handleScroll(deltaY) {
           isFullscreen = true;
           isAnimating = false;
         }, 500);
-         //navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
+       navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
       }, 400);
     }, 600);
   }
@@ -71,7 +71,7 @@ function handleScroll(deltaY) {
       heroSection.classList.remove('hero-front');
 
       setTimeout(() => {
-        //document.body.classList.add('scroll-lock');
+        document.body.classList.add('scroll-lock');
         navbar.classList.remove('navbar-bg'); // ✅ REMOVE BG HERE
         isFullscreen = false;
         isAnimating = false;
