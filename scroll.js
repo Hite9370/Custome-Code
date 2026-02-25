@@ -5,8 +5,7 @@ const navbar = document.querySelector('.navbar');
 
 let isFullscreen = false;
 let isAnimating = false;
-let touchStartY = 0;
-let lastScrollY = 0;
+let expandedOnce = false;
 
 document.body.classList.add('scroll-lock');
 
@@ -29,45 +28,29 @@ const observer = new IntersectionObserver(
 observer.observe(heroSection);
 
 /* =========================
-   EXPAND (DESKTOP)
-========================= */
-window.addEventListener('wheel', (e) => {
-  if (!isFullscreen && !isAnimating && e.deltaY > 50) {
-    expandHero();
-  }
-}, { passive: true });
-
-/* =========================
-   EXPAND (MOBILE)
-========================= */
-window.addEventListener('touchstart', (e) => {
-  touchStartY = e.touches[0].clientY;
-}, { passive: true });
-
-window.addEventListener('touchend', (e) => {
-  const touchEndY = e.changedTouches[0].clientY;
-  const deltaY = touchStartY - touchEndY;
-
-  if (!isFullscreen && !isAnimating && deltaY > 50) {
-    expandHero();
-  }
-}, { passive: true });
-
-/* =========================
-   SMART SHRINK WHEN RETURNING TO TOP
+   EXPAND WHEN USER STARTS SCROLLING
 ========================= */
 window.addEventListener('scroll', () => {
 
+  // EXPAND (only once when at top)
+  if (
+    !isFullscreen &&
+    !isAnimating &&
+    window.scrollY > 10 &&
+    !expandedOnce
+  ) {
+    expandHero();
+  }
+
+  // SHRINK (when coming back to top)
   if (
     isFullscreen &&
     !isAnimating &&
-    window.scrollY <= 1 &&
-    lastScrollY > 50   // Only if user was actually scrolling down before
+    window.scrollY <= 0
   ) {
     shrinkHero();
   }
 
-  lastScrollY = window.scrollY;
 });
 
 /* =========================
@@ -75,6 +58,9 @@ window.addEventListener('scroll', () => {
 ========================= */
 function expandHero() {
   isAnimating = true;
+  expandedOnce = true;
+
+  window.scrollTo(0, 0);
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
@@ -87,7 +73,6 @@ function expandHero() {
       document.body.classList.remove('scroll-lock');
       isFullscreen = true;
       isAnimating = false;
-      lastScrollY = 0; // reset properly
     }, 500);
 
   }, 600);
@@ -100,8 +85,8 @@ function shrinkHero() {
   isAnimating = true;
 
   window.scrollTo(0, 0);
-
   document.body.classList.add('scroll-lock');
+
   heroText.classList.remove('show-text');
 
   setTimeout(() => {
@@ -111,6 +96,7 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
+      expandedOnce = false;
     }, 400);
 
   }, 200);
