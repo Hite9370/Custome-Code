@@ -71,7 +71,7 @@ function handleScroll(deltaY) {
       heroSection.classList.remove('hero-front');
 
       setTimeout(() => {
-        document.body.classList.remove('scroll-lock');
+        document.body.classList.add('scroll-lock');
         navbar.classList.remove('navbar-bg'); // ✅ REMOVE BG HERE
         isFullscreen = false;
         isAnimating = false;
