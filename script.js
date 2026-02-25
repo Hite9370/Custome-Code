@@ -51,10 +51,10 @@ function handleScroll(deltaY) {
 
         setTimeout(() => {
           document.body.classList.remove('scroll-lock');
-          navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE
           isFullscreen = true;
           isAnimating = false;
         }, 500);
+         navbar.classList.add('navbar-bg'); // ✅ ADD BG HERE         
       }, 400);
     }, 600);
   }
