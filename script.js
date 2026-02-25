@@ -153,22 +153,27 @@ function handleScroll(deltaY) {
   /* ======================
      SCROLL UP → SHRINK
   ====================== */
-  if (deltaY < 0 && isFullscreen) {
-    startCooldown();
-    isAnimating = true;
+if (deltaY < 0 && isFullscreen) {
 
-    heroText.classList.remove('show-text');
+  isAnimating = true;
 
-    setTimeout(() => {
-      heroImage.classList.remove('fullscreen');
-      heroSection.classList.remove('hero-front');
-      navbar.classList.remove('navbar-bg');
+  // ✅ ADD THIS HERE
+  document.body.classList.add('scroll-lock');
 
-      isFullscreen = false;
-      isAnimating = false;
-      document.body.classList.remove('scroll-lock');
-    }, 600); // match CSS reverse time
-  }
+  heroText.classList.remove('show-text');
+
+  setTimeout(() => {
+    heroImage.classList.remove('fullscreen');
+    heroSection.classList.remove('hero-front');
+    navbar.classList.remove('navbar-bg');
+
+    isFullscreen = false;
+    isAnimating = false;
+
+    // unlock AFTER animation completes
+    document.body.classList.remove('scroll-lock');
+
+  }, 600); // match your CSS timing
 }
 
 /* =========================
