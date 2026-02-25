@@ -8,6 +8,8 @@ let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
 
+document.body.classList.add('scroll-lock');
+
 /* =========================
    DESKTOP (Wheel)
 ========================= */
