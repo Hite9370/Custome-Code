@@ -106,6 +106,9 @@ let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
 
+// ⭐ Default scroll-lock before any animation
+document.body.classList.add('scroll-lock');
+
 /* =========================
    NAVBAR BG OBSERVER
 ========================= */
@@ -125,7 +128,7 @@ const observer = new IntersectionObserver(
 observer.observe(heroSection);
 
 /* =========================
-   FIRST SCROLL TO EXPAND (KEEP ORIGINAL BEHAVIOR)
+   FIRST SCROLL TO EXPAND
 ========================= */
 window.addEventListener('wheel', (e) => {
   if (!isFullscreen && !isAnimating && e.deltaY > 50) expandHero();
@@ -145,46 +148,45 @@ window.addEventListener('touchend', (e) => {
    SHRINK WHEN SCROLL NEAR TOP
 ========================= */
 window.addEventListener('scroll', () => {
-  // Use threshold for mobile momentum scroll
+  // Shrink when scroll is at top
   if (isFullscreen && !isAnimating && window.scrollY <= 5) {
     shrinkHero();
   }
 });
 
 /* =========================
-   EXPAND (KEEP ORIGINAL FLOW)
+   EXPAND HERO
 ========================= */
 function expandHero() {
   if (isAnimating) return;
   isAnimating = true;
 
+  // ✅ Keep scroll locked during expand
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
   heroSection.classList.add('hero-front');
 
   setTimeout(() => {
-    setTimeout(() => {
-      heroText.classList.add('show-text');
+    heroText.classList.add('show-text');
 
-      setTimeout(() => {
-        // ✅ First expand finishes → remove scroll-lock (keep exactly as you have)
-        document.body.classList.remove('scroll-lock');
-        isFullscreen = true;
-        isAnimating = false;
-      }, 500);
-    }, 400);
+    setTimeout(() => {
+      // ✅ Animation finished → unlock body scroll
+      document.body.classList.remove('scroll-lock');
+      isFullscreen = true;
+      isAnimating = false;
+    }, 500);
   }, 600);
 }
 
 /* =========================
-   SHRINK (SMOOTH ON MOBILE)
+   SHRINK HERO
 ========================= */
 function shrinkHero() {
   if (isAnimating) return;
   isAnimating = true;
 
-  // Lock scroll during shrink animation
+  // ✅ Lock scroll during shrink
   document.body.classList.add('scroll-lock');
 
   heroText.classList.remove('show-text');
@@ -197,7 +199,7 @@ function shrinkHero() {
       isFullscreen = false;
       isAnimating = false;
 
-      // Unlock body after shrink
+      // ✅ Animation finished → unlock body scroll
       document.body.classList.remove('scroll-lock');
     }, 400);
   }, 200);
