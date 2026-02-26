@@ -89,14 +89,6 @@ function shrinkHero() {
   }, 200);
 }*/
 
-
-
-
-
-
-
-
-
 /*const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 const heroText = document.querySelector('.hero_text_container');
@@ -106,9 +98,8 @@ let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
 
-// ⭐ Default scroll-lock before any animation
-document.body.classList.add('scroll-lock');
 
+document.body.classList.add('scroll-lock');
 
 const observer = new IntersectionObserver(
   (entries) => {
@@ -140,7 +131,6 @@ window.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 window.addEventListener('scroll', () => {
-  // Shrink when scroll is at top
   if (isFullscreen && !isAnimating && window.scrollY <= 5) {
     shrinkHero();
   }
@@ -150,7 +140,7 @@ function expandHero() {
   if (isAnimating) return;
   isAnimating = true;
 
-  // ✅ Keep scroll locked during expand
+  // ✅ Lock scroll during expand
   document.body.classList.add('scroll-lock');
 
   heroImage.classList.add('fullscreen');
@@ -160,7 +150,7 @@ function expandHero() {
     heroText.classList.add('show-text');
 
     setTimeout(() => {
-      // ✅ Animation finished → unlock body scroll
+      // ✅ Animation finished → unlock scroll
       document.body.classList.remove('scroll-lock');
       isFullscreen = true;
       isAnimating = false;
@@ -172,7 +162,7 @@ function shrinkHero() {
   if (isAnimating) return;
   isAnimating = true;
 
-  // ✅ Lock scroll during shrink
+  // ✅ Always lock scroll during shrink
   document.body.classList.add('scroll-lock');
 
   heroText.classList.remove('show-text');
@@ -185,11 +175,17 @@ function shrinkHero() {
       isFullscreen = false;
       isAnimating = false;
 
-      // ✅ Animation finished → unlock body scroll
+      // ✅ Unlock scroll after shrink finishes
       document.body.classList.remove('scroll-lock');
     }, 400);
   }, 200);
 }*/
+
+
+
+
+
+
 
 
 const heroSection = document.querySelector('.section_home_hero');
@@ -201,7 +197,7 @@ let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
 
-// ⭐ Default scroll-lock before first animation
+// Default scroll-lock
 document.body.classList.add('scroll-lock');
 
 /* =========================
@@ -240,9 +236,17 @@ window.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 /* =========================
-   SHRINK WHEN SCROLL NEAR TOP
+   SCROLL LISTENER FOR TOP
 ========================= */
 window.addEventListener('scroll', () => {
+  // When scroll is near top
+  if (window.scrollY <= 5) {
+    document.body.classList.add('scroll-top'); // ⭐ Add your class here
+  } else {
+    document.body.classList.remove('scroll-top'); // Remove when scrolling down
+  }
+
+  // Optional: trigger shrink hero
   if (isFullscreen && !isAnimating && window.scrollY <= 5) {
     shrinkHero();
   }
@@ -255,8 +259,7 @@ function expandHero() {
   if (isAnimating) return;
   isAnimating = true;
 
-  // ✅ Lock scroll during expand
-  document.body.classList.add('scroll-lock');
+  document.body.classList.add('scroll-lock'); // Lock scroll during animation
 
   heroImage.classList.add('fullscreen');
   heroSection.classList.add('hero-front');
@@ -265,8 +268,7 @@ function expandHero() {
     heroText.classList.add('show-text');
 
     setTimeout(() => {
-      // ✅ Animation finished → unlock scroll
-      document.body.classList.remove('scroll-lock');
+      document.body.classList.remove('scroll-lock'); // Unlock scroll after expand
       isFullscreen = true;
       isAnimating = false;
     }, 500);
@@ -280,8 +282,7 @@ function shrinkHero() {
   if (isAnimating) return;
   isAnimating = true;
 
-  // ✅ Always lock scroll during shrink
-  document.body.classList.add('scroll-lock');
+  document.body.classList.add('scroll-lock'); // Lock scroll during shrink
 
   heroText.classList.remove('show-text');
 
@@ -292,9 +293,7 @@ function shrinkHero() {
     setTimeout(() => {
       isFullscreen = false;
       isAnimating = false;
-
-      // ✅ Unlock scroll after shrink finishes
-      document.body.classList.remove('scroll-lock');
+      document.body.classList.remove('scroll-lock'); // Unlock scroll after shrink
     }, 400);
   }, 200);
 }
