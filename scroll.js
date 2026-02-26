@@ -8,7 +8,7 @@ let isAnimating = false;
 let touchStartY = 0;
 
 /* =========================
-   NAVBAR BG OBSERVER
+   NAVBAR BG
 ========================= */
 const observer = new IntersectionObserver(
   (entries) => {
@@ -43,10 +43,11 @@ window.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 /* =========================
-   SHRINK WHEN SCROLL REACHES TOP
+   SHRINK WHEN SCROLL NEAR TOP
 ========================= */
 window.addEventListener('scroll', () => {
-  if (isFullscreen && !isAnimating && window.scrollY === 0) {
+  // Use threshold instead of strict zero
+  if (isFullscreen && !isAnimating && window.scrollY <= 5) {
     shrinkHero();
   }
 });
