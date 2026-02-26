@@ -373,6 +373,7 @@ function expandHero() {
 
     setTimeout(() => {
       document.body.classList.remove('scroll-lock');
+      document.body.classList.remove('scroll-top');      
       isFullscreen = true;
       isAnimating = false;
 
