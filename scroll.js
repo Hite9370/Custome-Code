@@ -289,7 +289,6 @@ function shrinkHero() {
 
 
 
-
 /* =========================
    ELEMENT SELECTORS
 ========================= */
@@ -301,6 +300,9 @@ const navbar = document.querySelector('.navbar');
 let isFullscreen = false;
 let isAnimating = false;
 let touchStartY = 0;
+
+// Default scroll-top class at start
+document.body.classList.add('scroll-top');
 
 // Default scroll-lock at start
 document.body.classList.add('scroll-lock');
@@ -374,9 +376,9 @@ function expandHero() {
       isFullscreen = true;
       isAnimating = false;
 
-      // After animation, manage scroll-top class
-      if (window.scrollY <= 5) {
-        document.body.classList.add('scroll-top');
+      // Remove scroll-top after animation if not at top
+      if (window.scrollY > 5) {
+        document.body.classList.remove('scroll-top');
       }
     }, 500);
   }, 600);
