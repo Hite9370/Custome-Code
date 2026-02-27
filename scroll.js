@@ -289,9 +289,7 @@ function shrinkHero() {
 
 
 
-/* =========================
-   ELEMENT SELECTORS
-========================= */
+/*
 const heroSection = document.querySelector('.section_home_hero');
 const heroImage = document.querySelector('.home_hero_image-container');
 const heroText = document.querySelector('.hero_text_container');
@@ -307,9 +305,6 @@ document.body.classList.add('scroll-top');
 // Default scroll-lock at start
 document.body.classList.add('scroll-lock');
 
-/* =========================
-   NAVBAR BG OBSERVER
-========================= */
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach(entry => {
@@ -325,9 +320,6 @@ const observer = new IntersectionObserver(
 
 observer.observe(heroSection);
 
-/* =========================
-   FIRST SCROLL / SWIPE TO EXPAND
-========================= */
 function handleExpandTrigger(deltaY) {
   if (!isFullscreen && !isAnimating && deltaY > 50) {
     expandHero();
@@ -346,9 +338,7 @@ window.addEventListener('touchend', (e) => {
   handleExpandTrigger(deltaY);
 }, { passive: true });
 
-/* =========================
-   SCROLL LISTENER
-========================= */
+
 window.addEventListener('scroll', () => {
   // Optional: shrink hero if scrolled near top
   if (isFullscreen && !isAnimating && window.scrollY <= 5) {
@@ -356,9 +346,6 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* =========================
-   EXPAND HERO
-========================= */
 function expandHero() {
   if (isAnimating) return;
   isAnimating = true;
@@ -385,9 +372,6 @@ function expandHero() {
   }, 600);
 }
 
-/* =========================
-   SHRINK HERO
-========================= */
 function shrinkHero() {
   if (isAnimating) return;
   isAnimating = true;
@@ -412,5 +396,155 @@ function shrinkHero() {
         document.body.classList.add('scroll-top');
       }
     }, 400);
+  }, 200);
+}*/
+
+
+/* =========================
+   ELEMENT SELECTORS
+========================= */
+const heroSection = document.querySelector('.section_home_hero');
+const heroImage = document.querySelector('.home_hero_image-container');
+const heroText = document.querySelector('.hero_text_container');
+const navbar = document.querySelector('.navbar');
+
+let isFullscreen = false;
+let isAnimating = false;
+let touchStartY = 0;
+
+/* =========================
+   INITIAL STATE
+========================= */
+document.body.classList.add('scroll-top');
+document.body.classList.add('scroll-lock');
+
+/* =========================
+   NAVBAR BG OBSERVER
+========================= */
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.intersectionRatio < 0.5) {
+        navbar.classList.add('navbar-bg');
+      } else {
+        navbar.classList.remove('navbar-bg');
+      }
+    });
+  },
+  { threshold: 0.5 }
+);
+
+observer.observe(heroSection);
+
+/* =========================
+   EXPAND TRIGGER
+========================= */
+function handleExpandTrigger(deltaY) {
+  if (!isFullscreen && !isAnimating && deltaY > 50) {
+    expandHero();
+  }
+}
+
+/* Mouse Wheel */
+window.addEventListener(
+  'wheel',
+  (e) => handleExpandTrigger(e.deltaY),
+  { passive: true }
+);
+
+/* Touch */
+window.addEventListener(
+  'touchstart',
+  (e) => {
+    touchStartY = e.touches[0].clientY;
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  'touchend',
+  (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY - touchEndY;
+    handleExpandTrigger(deltaY);
+  },
+  { passive: true }
+);
+
+/* =========================
+   SCROLL LISTENER
+========================= */
+window.addEventListener('scroll', () => {
+
+  // Expand if scrolling down from top
+  if (!isFullscreen && !isAnimating && window.scrollY > 50) {
+    expandHero();
+  }
+
+  // Shrink if returning to top
+  if (isFullscreen && !isAnimating && window.scrollY <= 5) {
+    shrinkHero();
+  }
+
+});
+
+/* =========================
+   EXPAND HERO
+========================= */
+function expandHero() {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  document.body.classList.add('scroll-lock');
+
+  heroImage.classList.add('fullscreen');
+  heroSection.classList.add('hero-front');
+
+  setTimeout(() => {
+    heroText.classList.add('show-text');
+
+    setTimeout(() => {
+      document.body.classList.remove('scroll-lock');
+      document.body.classList.remove('scroll-top');
+
+      isFullscreen = true;
+      isAnimating = false;
+    }, 500);
+
+  }, 600);
+}
+
+/* =========================
+   SHRINK HERO
+========================= */
+function shrinkHero() {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  document.body.classList.add('scroll-lock');
+  document.body.classList.add('scroll-top');
+
+  heroText.classList.remove('show-text');
+
+  setTimeout(() => {
+    heroImage.classList.remove('fullscreen');
+    heroSection.classList.remove('hero-front');
+
+    setTimeout(() => {
+
+      isFullscreen = false;
+      isAnimating = false;
+
+      // Keep locked if at top
+      if (window.scrollY <= 5) {
+        document.body.classList.add('scroll-lock');
+        document.body.classList.add('scroll-top');
+      } else {
+        document.body.classList.remove('scroll-lock');
+        document.body.classList.remove('scroll-top');
+      }
+
+    }, 400);
+
   }, 200);
 }
