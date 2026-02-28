@@ -44,3 +44,16 @@ input.addEventListener('blur', function() {
 
 input.addEventListener('change', reset);
 input.addEventListener('keyup', reset);
+
+
+
+  const swiper = new Swiper(".dashboard-swiper", {
+    slidesPerView: 1,
+    loop: true,
+    speed: 800,
+    autoplay: {
+      delay: 2000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true, // 👈 stops on hover
+    },
+  });
