@@ -1,7 +1,7 @@
 
 var input = document.querySelector("#phone"),
 	dialCode = document.querySelector(".dialCode"),
- 	errorMsg = document.querySelector("#error-msg"),
+ 	errorMsg = document.querySelector("#error-msg");
 	
 var iti = intlTelInput(input, {
   initialCountry: "us",
