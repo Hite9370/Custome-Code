@@ -47,7 +47,7 @@ input.addEventListener('keyup', reset);
 
 
 
-  const swiper = new Swiper(".dashboard-swiper", {
+  const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
     loop: true,
     speed: 800,
