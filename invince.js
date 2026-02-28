@@ -2,8 +2,7 @@
 var input = document.querySelector("#phone"),
 	dialCode = document.querySelector(".dialCode"),
  	errorMsg = document.querySelector("#error-msg"),
-    validMsg = document.querySelector("#valid-msg");
-
+	
 var iti = intlTelInput(input, {
   initialCountry: "us",
   placeholderNumberType: 'FIXED_LINE',
@@ -27,7 +26,6 @@ var reset = function() {
   input.classList.remove("error");
   errorMsg.innerHTML = "";
   errorMsg.classList.add("hide");
-  validMsg.classList.add("hide");
 };
 
 input.addEventListener('blur', function() {
