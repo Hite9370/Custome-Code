@@ -15,7 +15,13 @@ var updateInputValue = function (event) {
 input.addEventListener('input', updateInputValue, false);
 input.addEventListener('countrychange', updateInputValue, false);
 
-var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+var errorMap = [
+  "Please enter a valid phone number.",
+  "Please select a valid country code.",
+  "The phone number is too short. Please check and try again.",
+  "The phone number is too long. Please check and try again.",
+  "Please enter a valid phone number."
+];
 
 var reset = function() {
   input.classList.remove("error");
