@@ -50,7 +50,7 @@ input.addEventListener('keyup', reset);
   const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
     loop: true,
-    speed: 800,
+    speed: 1200,
     autoplay: {
       delay: 2000,
       disableOnInteraction: false,
