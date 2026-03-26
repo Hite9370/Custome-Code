@@ -51,16 +51,7 @@ function setActive(index) {
     ease: "power3.out"
   });
 
-  current = index;
-
-  // Animate left text scale and opacity
-  items.forEach((el, i) => {
-    gsap.to(el.querySelector(".home-work_card-list-heading"), {
-      scale: i === current ? 1.15 : 1,
-      opacity: i === current ? 1 : 0.3,
-      duration: 0.3
-    });
-  });
+  current = index; 
 }
 
 // Update positions
