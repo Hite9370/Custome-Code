@@ -1,7 +1,7 @@
 
 //Our Work
 
-const items = gsap.utils.toArray(".home-work_card-list-item");
+/*const items = gsap.utils.toArray(".home-work_card-list-item");
 const container = document.querySelector(".home-work_card-left-wrap");
 const leftList = document.querySelector(".home-work_card-list");
 const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
@@ -125,8 +125,136 @@ window.addEventListener("mouseup", () => {
   });
 
   setTimeout(() => isInteracting = false, 1500);
+});*/
+
+
+const items = gsap.utils.toArray(".home-work_card-list-item");
+const leftList = document.querySelector(".home-work_card-list");
+const dragArea = document.querySelector(".home-work_card-list");
+const rightWrapper = document.querySelector(".home-work_card-image-scroll-wrap");
+const cards = gsap.utils.toArray(".home-work_card-image-wrap");
+const containerWrap = document.querySelector(".home-work_card-left-wrap");
+
+let current = 0;
+let position = 0;
+
+const gap = 40;
+const cardHeight = cards[0].offsetHeight;
+const itemHeight = items[0].offsetHeight;
+const itemsCount = items.length;
+
+const totalCardsHeight = itemsCount * cardHeight + (itemsCount - 1) * gap;
+
+const centerOffsetLeft = (containerWrap.offsetHeight / 2) - (itemHeight / 2);
+const centerOffsetRight = (containerWrap.offsetHeight / 2) - (cardHeight / 2);
+
+gsap.set(leftList, { y: centerOffsetLeft });
+gsap.set(rightWrapper, { y: centerOffsetRight });
+
+items[0].classList.add("active");
+
+let isInteracting = false;
+let autoSpeed = 0.4;
+
+function setActive(index) {
+  index = Math.max(0, Math.min(itemsCount - 1, index));
+  if (index === current) return;
+
+  items[current].classList.remove("active");
+  items[index].classList.add("active");
+
+  let targetY = centerOffsetRight - index * (cardHeight + gap);
+  const minY = containerWrap.offsetHeight - totalCardsHeight;
+  const maxY = centerOffsetRight;
+  targetY = Math.min(maxY, Math.max(minY, targetY));
+
+  gsap.to(rightWrapper, {
+    y: targetY,
+    duration: 0.6,
+    ease: "power3.out"
+  });
+
+  current = index;
+}
+
+function updatePosition() {
+  gsap.set(leftList, { y: centerOffsetLeft - position });
+  const index = Math.round(position / itemHeight);
+  setActive(index);
+}
+
+// AUTO SCROLL
+gsap.ticker.add(() => {
+  if (isInteracting) return;
+
+  position += autoSpeed;
+
+  const maxPosition = (items.length - 1) * itemHeight;
+  if (position > maxPosition) position = 0;
+
+  updatePosition();
 });
 
+// WHEEL
+dragArea.addEventListener("wheel", (e) => {
+  isInteracting = true;
+
+  position += e.deltaY * 0.8;
+
+  const maxPosition = (items.length - 1) * itemHeight;
+  position = Math.max(0, Math.min(position, maxPosition));
+
+  updatePosition();
+
+  clearTimeout(window.autoTimeout);
+  window.autoTimeout = setTimeout(() => isInteracting = false, 1200);
+});
+
+// DRAG ONLY ON LIST
+let isDown = false;
+let startY = 0;
+
+dragArea.addEventListener("mousedown", (e) => {
+  isDown = true;
+  isInteracting = true;
+  startY = e.clientY;
+});
+
+dragArea.addEventListener("mousemove", (e) => {
+  if (!isDown) return;
+
+  const delta = startY - e.clientY;
+  position += delta;
+  startY = e.clientY;
+
+  const maxPosition = (items.length - 1) * itemHeight;
+  position = Math.max(0, Math.min(position, maxPosition));
+
+  updatePosition();
+});
+
+dragArea.addEventListener("mouseup", () => {
+  if (!isDown) return;
+
+  isDown = false;
+
+  const snapIndex = Math.round(position / itemHeight);
+
+  gsap.to({}, {
+    duration: 0.3,
+    onUpdate: () => {
+      position = gsap.utils.interpolate(position, snapIndex * itemHeight, 0.2);
+      updatePosition();
+    }
+  });
+
+  setTimeout(() => isInteracting = false, 1200);
+});
+
+// Fix: release drag if mouse leaves
+dragArea.addEventListener("mouseleave", () => {
+  isDown = false;
+});
 
 // build-tabs
 document.addEventListener("DOMContentLoaded", function () {
