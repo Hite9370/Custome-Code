@@ -266,6 +266,7 @@ dragArea.addEventListener("mouseleave", () => {
 */
 
 
+window.addEventListener("load", () => {
 
 const items = gsap.utils.toArray(".home-work_card-list-item");
 const leftList = document.querySelector(".home-work_card-list");
@@ -277,7 +278,10 @@ const containerWrap = document.querySelector(".home-work_card-left-wrap");
 let current = 0;
 let position = 0;
 
-const listGap = 20; // MUST match CSS gap
+// ✅ Get REAL gap from CSS
+const listStyles = window.getComputedStyle(leftList);
+const listGap = parseFloat(listStyles.rowGap || listStyles.gap) || 0;
+
 const cardGap = 40;
 
 const cardHeight = cards[0].offsetHeight;
@@ -291,6 +295,7 @@ const totalCardsHeight = itemsCount * cardHeight + (itemsCount - 1) * cardGap;
 const centerOffsetLeft = (containerWrap.offsetHeight / 2) - (itemHeight / 2);
 const centerOffsetRight = (containerWrap.offsetHeight / 2) - (cardHeight / 2);
 
+// INIT
 gsap.set(leftList, { y: centerOffsetLeft });
 gsap.set(rightWrapper, { y: centerOffsetRight });
 
@@ -299,7 +304,7 @@ items[0].classList.add("active");
 let isInteracting = false;
 let autoSpeed = 0.4;
 
-// ACTIVE STATE
+// ACTIVE
 function setActive(index) {
   index = Math.max(0, Math.min(itemsCount - 1, index));
   if (index === current) return;
@@ -323,7 +328,7 @@ function setActive(index) {
   current = index;
 }
 
-// POSITION UPDATE
+// UPDATE
 function updatePosition() {
   gsap.set(leftList, { y: centerOffsetLeft - position });
 
@@ -344,7 +349,7 @@ gsap.ticker.add(() => {
   updatePosition();
 });
 
-// WHEEL (ONLY ON LIST)
+// WHEEL
 dragArea.addEventListener("wheel", (e) => {
   isInteracting = true;
 
@@ -359,7 +364,7 @@ dragArea.addEventListener("wheel", (e) => {
   window.autoTimeout = setTimeout(() => isInteracting = false, 1200);
 });
 
-// DRAG ONLY ON LIST
+// DRAG
 let isDown = false;
 let startY = 0;
 
@@ -382,7 +387,7 @@ dragArea.addEventListener("mousemove", (e) => {
   updatePosition();
 });
 
-dragArea.addEventListener("mouseup", () => {
+window.addEventListener("mouseup", () => {
   if (!isDown) return;
 
   isDown = false;
@@ -400,8 +405,6 @@ dragArea.addEventListener("mouseup", () => {
   setTimeout(() => isInteracting = false, 1200);
 });
 
-dragArea.addEventListener("mouseleave", () => {
-  isDown = false;
 });
 
 
