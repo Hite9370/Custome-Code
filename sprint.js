@@ -131,7 +131,7 @@ window.addEventListener("mouseup", () => {
 const items = gsap.utils.toArray(".home-work_card-list-item");
 const leftList = document.querySelector(".home-work_card-list");
 const dragArea = document.querySelector(".home-work_card-list");
-const rightWrapper = document.querySelector(".home-work_card-image-scroll-wrap");
+const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
 const cards = gsap.utils.toArray(".home-work_card-image-wrap");
 const containerWrap = document.querySelector(".home-work_card-left-wrap");
 
