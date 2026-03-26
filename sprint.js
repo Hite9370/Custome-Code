@@ -138,31 +138,31 @@ window.addEventListener("mouseup", () => {
 
 
 // build-tabs
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".home-build_list-item");
   const cards = document.querySelectorAll(".home-build_image-card");
   const numberEl = document.querySelector(".home-build_right-card-num .heading-style-h4");
 
   function setActive(index) {
-    // remove active
-    tabs.forEach(t => t.classList.remove("active"));
-    cards.forEach(c => c.classList.remove("active"));
+    // remove active classes
+    tabs.forEach(tab => tab.classList.remove("active"));
+    cards.forEach(card => card.classList.remove("active"));
 
-    // add active
+    // add active to current
     tabs[index].classList.add("active");
     cards[index].classList.add("active");
 
-    // update number (01, 02...)
-    numberEl.textContent = String(index + 1).padStart(2, "0");
+    // update number (01, 02, 03...)
+    numberEl.textContent = (index + 1).toString().padStart(2, "0");
   }
 
-  // click events
+  // click event
   tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => {
+    tab.addEventListener("click", function () {
       setActive(index);
     });
   });
 
-  // default state
+  // default first item active
   setActive(0);
 });
