@@ -126,6 +126,146 @@ window.addEventListener("mouseup", () => {
 
   setTimeout(() => isInteracting = false, 1500);
 });*/
+/*
+const items = gsap.utils.toArray(".home-work_card-list-item");
+const leftList = document.querySelector(".home-work_card-list");
+const dragArea = document.querySelector(".home-work_card-list");
+const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
+const cards = gsap.utils.toArray(".home-work_card-image-wrap");
+const containerWrap = document.querySelector(".home-work_card-left-wrap");
+
+let current = 0;
+let position = 0;
+
+const listGap = 20; // MUST match CSS gap
+const cardGap = 40;
+
+const cardHeight = cards[0].offsetHeight;
+const itemHeight = items[0].offsetHeight;
+const itemSpacing = itemHeight + listGap;
+
+const itemsCount = items.length;
+
+const totalCardsHeight = itemsCount * cardHeight + (itemsCount - 1) * cardGap;
+
+const centerOffsetLeft = (containerWrap.offsetHeight / 2) - (itemHeight / 2);
+const centerOffsetRight = (containerWrap.offsetHeight / 2) - (cardHeight / 2);
+
+gsap.set(leftList, { y: centerOffsetLeft });
+gsap.set(rightWrapper, { y: centerOffsetRight });
+
+items[0].classList.add("active");
+
+let isInteracting = false;
+let autoSpeed = 0.4;
+
+// ACTIVE STATE
+function setActive(index) {
+  index = Math.max(0, Math.min(itemsCount - 1, index));
+  if (index === current) return;
+
+  items[current].classList.remove("active");
+  items[index].classList.add("active");
+
+  let targetY = centerOffsetRight - index * (cardHeight + cardGap);
+
+  const minY = containerWrap.offsetHeight - totalCardsHeight;
+  const maxY = centerOffsetRight;
+
+  targetY = Math.min(maxY, Math.max(minY, targetY));
+
+  gsap.to(rightWrapper, {
+    y: targetY,
+    duration: 0.6,
+    ease: "power3.out"
+  });
+
+  current = index;
+}
+
+// POSITION UPDATE
+function updatePosition() {
+  gsap.set(leftList, { y: centerOffsetLeft - position });
+
+  const index = Math.round(position / itemSpacing);
+  setActive(index);
+}
+
+// AUTO SCROLL
+gsap.ticker.add(() => {
+  if (isInteracting) return;
+
+  position += autoSpeed;
+
+  const maxPosition = (itemsCount - 1) * itemSpacing;
+
+  if (position > maxPosition) position = 0;
+
+  updatePosition();
+});
+
+// WHEEL (ONLY ON LIST)
+dragArea.addEventListener("wheel", (e) => {
+  isInteracting = true;
+
+  position += e.deltaY * 0.8;
+
+  const maxPosition = (itemsCount - 1) * itemSpacing;
+  position = Math.max(0, Math.min(position, maxPosition));
+
+  updatePosition();
+
+  clearTimeout(window.autoTimeout);
+  window.autoTimeout = setTimeout(() => isInteracting = false, 1200);
+});
+
+// DRAG ONLY ON LIST
+let isDown = false;
+let startY = 0;
+
+dragArea.addEventListener("mousedown", (e) => {
+  isDown = true;
+  isInteracting = true;
+  startY = e.clientY;
+});
+
+dragArea.addEventListener("mousemove", (e) => {
+  if (!isDown) return;
+
+  const delta = startY - e.clientY;
+  position += delta;
+  startY = e.clientY;
+
+  const maxPosition = (itemsCount - 1) * itemSpacing;
+  position = Math.max(0, Math.min(position, maxPosition));
+
+  updatePosition();
+});
+
+dragArea.addEventListener("mouseup", () => {
+  if (!isDown) return;
+
+  isDown = false;
+
+  const snapIndex = Math.round(position / itemSpacing);
+
+  gsap.to({}, {
+    duration: 0.3,
+    onUpdate: () => {
+      position = gsap.utils.interpolate(position, snapIndex * itemSpacing, 0.2);
+      updatePosition();
+    }
+  });
+
+  setTimeout(() => isInteracting = false, 1200);
+});
+
+dragArea.addEventListener("mouseleave", () => {
+  isDown = false;
+});
+*/
+
+
 
 const items = gsap.utils.toArray(".home-work_card-list-item");
 const leftList = document.querySelector(".home-work_card-list");
@@ -263,7 +403,6 @@ dragArea.addEventListener("mouseup", () => {
 dragArea.addEventListener("mouseleave", () => {
   isDown = false;
 });
-
 
 
 
