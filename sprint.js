@@ -4,7 +4,7 @@
 const items = gsap.utils.toArray(".home-work_card-list-item");
 const container = document.querySelector(".home-work_card-left-wrap");
 const leftList = document.querySelector(".home-work_card-list");
-const rightWrapper = document.querySelector(".home-work_card-image-scroll-wrap");
+const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
 const cards = gsap.utils.toArray(".home-work_card-image-wrap");
 
 let current = 0;
