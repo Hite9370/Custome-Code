@@ -264,6 +264,10 @@ dragArea.addEventListener("mouseleave", () => {
   isDown = false;
 });
 
+
+
+
+
 // build-tabs
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".home-build_list-item");
@@ -293,3 +297,35 @@ document.addEventListener("DOMContentLoaded", function () {
   // default first item active
   setActive(0);
 });
+
+
+
+
+const pricingSwiper = new Swiper(".pricingSwiper", {
+    slidesPerView: 4,
+    spaceBetween: 20,
+    loop: false,
+
+    navigation: {
+      nextEl: ".pricing-next",
+      prevEl: ".pricing-prev",
+    },
+
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
+      },
+      480: {
+        slidesPerView: 1.5,
+      },
+      768: {
+        slidesPerView: 2,
+      },
+      992: {
+        slidesPerView: 3,
+      },
+      1200: {
+        slidesPerView: 4,
+      }
+    }
+  });
