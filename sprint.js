@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-const pricingSwiper = new Swiper(".pricingSwiper", {
+const pricingSwiper = new Swiper(".pricingswiper", {
     slidesPerView: 4,
     spaceBetween: 20,
     loop: false,
