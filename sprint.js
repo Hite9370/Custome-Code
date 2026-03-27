@@ -471,3 +471,32 @@ const pricingSwiper = new Swiper(".pricingswiper", {
       }
     }
   });
+
+const casestudiesswiper = new Swiper(".casestudiesswiper", {
+    slidesPerView: 3.5,
+    spaceBetween: 20,
+    loop: false,
+
+    navigation: {
+      nextEl: ".casestudies-next",
+      prevEl: ".casestudies-prev",
+    },
+
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
+      },
+      480: {
+        slidesPerView: 1.5,
+      },
+      768: {
+        slidesPerView: 2,
+      },
+      992: {
+        slidesPerView: 2.5,
+      },
+      1200: {
+        slidesPerView: 3.5,
+      }
+    }
+  });
