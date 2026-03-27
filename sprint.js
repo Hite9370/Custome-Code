@@ -500,3 +500,32 @@ const casestudiesswiper = new Swiper(".casestudiesswiper", {
       }
     }
   });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const items = document.querySelectorAll(".home-faq_item");
+
+  // Open first by default
+  if (items.length > 0) {
+    items[0].classList.add("active");
+    const firstAns = items[0].querySelector(".home-faq_item-ans-wrap");
+    firstAns.style.maxHeight = firstAns.scrollHeight + "px";
+  }
+
+  items.forEach(item => {
+    const question = item.querySelector(".home-faq_item-quetion");
+    const answer = item.querySelector(".home-faq_item-ans-wrap");
+
+    question.addEventListener("click", () => {
+
+      items.forEach(i => {
+        i.classList.remove("active");
+        i.querySelector(".home-faq_item-ans-wrap").style.maxHeight = null;
+      });
+
+      item.classList.add("active");
+      answer.style.maxHeight = answer.scrollHeight + "px";
+
+    });
+  });
+});
