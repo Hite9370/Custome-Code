@@ -507,8 +507,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Open first by default
   if (items.length > 0) {
-    items[0].classList.add("active");
-    const firstAns = items[0].querySelector(".home-faq_item-ans-wrap");
+    const first = items[0];
+    const firstAns = first.querySelector(".home-faq_item-ans-wrap");
+
+    first.classList.add("active");
     firstAns.style.maxHeight = firstAns.scrollHeight + "px";
   }
 
@@ -518,11 +520,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     question.addEventListener("click", () => {
 
+      // If already open → close it
+      if (item.classList.contains("active")) {
+        item.classList.remove("active");
+        answer.style.maxHeight = null;
+        return;
+      }
+
+      // Close all
       items.forEach(i => {
         i.classList.remove("active");
-        i.querySelector(".home-faq_item-ans-wrap").style.maxHeight = null;
+        const ans = i.querySelector(".home-faq_item-ans-wrap");
+        ans.style.maxHeight = null;
       });
 
+      // Open clicked
       item.classList.add("active");
       answer.style.maxHeight = answer.scrollHeight + "px";
 
