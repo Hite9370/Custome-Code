@@ -466,33 +466,77 @@ window.addEventListener("load", () => {
 
 
 
-// build-tabs
+// // build-tabs
+// document.addEventListener("DOMContentLoaded", function () {
+//   const tabs = document.querySelectorAll(".home-build_list-item");
+//   const cards = document.querySelectorAll(".home-build_image-card");
+//   const numberEl = document.querySelector(".home-build_right-card-num .heading-style-h4");
+
+//   function setActive(index) {
+//     // remove active classes
+//     tabs.forEach(tab => tab.classList.remove("active"));
+//     cards.forEach(card => card.classList.remove("active"));
+
+//     // add active to current
+//     tabs[index].classList.add("active");
+//     cards[index].classList.add("active");
+
+//     // update number (01, 02, 03...)
+//     numberEl.textContent = (index + 1).toString().padStart(2, "0");
+//   }
+
+//   // click event
+//   tabs.forEach((tab, index) => {
+//     tab.addEventListener("click", function () {
+//       setActive(index);
+//     });
+//   });
+
+//   // default first item active
+//   setActive(0);
+// });
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".home-build_list-item");
   const cards = document.querySelectorAll(".home-build_image-card");
+  const indicator = document.querySelector(".tabs-indicator");
   const numberEl = document.querySelector(".home-build_right-card-num .heading-style-h4");
 
   function setActive(index) {
-    // remove active classes
+    const activeTab = tabs[index];
+
+    // 1. Move indicator vertically
+    if (activeTab && indicator) {
+      indicator.style.height = `${activeTab.offsetHeight}px`;
+      // Use translateY for better performance
+      indicator.style.transform = `translateY(${activeTab.offsetTop}px)`;
+    }
+
+    // 2. Toggle Active Classes
     tabs.forEach(tab => tab.classList.remove("active"));
     cards.forEach(card => card.classList.remove("active"));
 
-    // add active to current
-    tabs[index].classList.add("active");
-    cards[index].classList.add("active");
+    activeTab.classList.add("active");
+    if (cards[index]) cards[index].classList.add("active");
 
-    // update number (01, 02, 03...)
-    numberEl.textContent = (index + 1).toString().padStart(2, "0");
+    // 3. Update Number
+    if (numberEl) {
+      numberEl.textContent = (index + 1).toString().padStart(2, "0");
+    }
   }
 
-  // click event
   tabs.forEach((tab, index) => {
-    tab.addEventListener("click", function () {
-      setActive(index);
-    });
+    tab.addEventListener("click", () => setActive(index));
   });
 
-  // default first item active
+  // Handle window resize to keep border aligned
+  window.addEventListener("resize", () => {
+    const currentIndex = Array.from(tabs).findIndex(t => t.classList.contains("active"));
+    setActive(currentIndex);
+  });
+
+  // Init
   setActive(0);
 });
 
