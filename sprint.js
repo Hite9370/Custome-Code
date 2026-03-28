@@ -546,7 +546,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const links = document.querySelectorAll('.home-process_left-list-item');
 const cards = document.querySelectorAll('.home-process_right-card');
-const wrappers = document.querySelectorAll('.card-wrapper');
+const wrappers = document.querySelectorAll('.home-process_card');
 
 // 1. CLICK TO SCROLL (Precise Calculation)
 links.forEach((link, index) => {
