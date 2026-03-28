@@ -416,8 +416,8 @@ window.addEventListener("load", () => {
     const leftContainer = document.querySelector(".home-work_card-left-wrap");
     const rightContainer = document.querySelector(".home-work_card-right-wrap");
 
-    const cardGap = 40; 
-    const listGap = 20;
+    const cardGap = 24; 
+    const listGap = 34;
 
     // Get measurements
     const cardHeight = cards[0].offsetHeight;
