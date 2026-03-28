@@ -544,48 +544,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-const links = document.querySelectorAll(".home-process_left-list-item");
-const wrap = document.querySelector(".home-process_right-card-wrap");
-const cards = document.querySelectorAll(".home-process_right-card");
+const links = document.querySelectorAll('.home-process_left-list-item');
+const cards = document.querySelectorAll('.home-process_right-card');
+const cardWrappers = document.querySelectorAll('.card-wrapper');
 
-// CLICK SCROLL
-links.forEach((link, index) => {
-  link.addEventListener("click", function(e) {
+// Click on sidebar scrolls smoothly and sets active
+links.forEach(link => {
+  link.addEventListener('click', function(e) {
     e.preventDefault();
-
-    let targetY;
-
-    if (index === 0) {
-      targetY = wrap.offsetTop;
-    } else {
-      const target = cards[index];
-      targetY = target.offsetTop - 100;
-    }
-
-    window.scrollTo({
-      top: targetY,
-      behavior: "smooth"
-    });
-
-    // 👉 ACTIVE CLASS ON CLICK
-    links.forEach(l => l.classList.remove("active"));
-    this.classList.add("active");
+    const targetId = this.getAttribute('href').substring(1);
+    const targetEl = document.getElementById(targetId);
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
 
+// Update active classes on scroll
+window.addEventListener('scroll', () => {
+  let scrollPos = window.scrollY + 120; // 120 to trigger a bit after top
 
-// SCROLL ACTIVE SYNC
-window.addEventListener("scroll", () => {
-  let currentIndex = 0;
+  cardWrappers.forEach((wrapper, index) => {
+    const top = wrapper.offsetTop;
+    const bottom = top + wrapper.offsetHeight;
 
-  cards.forEach((card, index) => {
-    const rect = card.getBoundingClientRect();
+    if (scrollPos >= top && scrollPos < bottom) {
+      // Activate left link
+      links.forEach(l => l.classList.remove('active'));
+      links[index].classList.add('active');
 
-    if (rect.top <= 120) {
-      currentIndex = index;
+      // Activate right card
+      cards.forEach(c => c.classList.remove('active'));
+      cards[index].classList.add('active');
     }
   });
-
-  links.forEach(link => link.classList.remove("active"));
-  links[currentIndex].classList.add("active");
 });
