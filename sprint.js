@@ -546,27 +546,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const links = document.querySelectorAll(".home-process_left-list-item");
 const wrap = document.querySelector(".home-process_right-card-wrap");
+const cards = document.querySelectorAll(".home-process_right-card");
 
+// CLICK SCROLL
 links.forEach((link, index) => {
   link.addEventListener("click", function(e) {
     e.preventDefault();
 
-    const cards = document.querySelectorAll(".home-process_right-card");
-
     let targetY;
 
     if (index === 0) {
-      // FIRST ITEM → reset to top of section
       targetY = wrap.offsetTop;
     } else {
-      // OTHER ITEMS → scroll normally
       const target = cards[index];
-      targetY = target.offsetTop - 100; // sticky offset
+      targetY = target.offsetTop - 100;
     }
 
     window.scrollTo({
       top: targetY,
       behavior: "smooth"
     });
+
+    // 👉 ACTIVE CLASS ON CLICK
+    links.forEach(l => l.classList.remove("active"));
+    this.classList.add("active");
   });
+});
+
+
+// SCROLL ACTIVE SYNC
+window.addEventListener("scroll", () => {
+  let currentIndex = 0;
+
+  cards.forEach((card, index) => {
+    const rect = card.getBoundingClientRect();
+
+    if (rect.top <= 120) {
+      currentIndex = index;
+    }
+  });
+
+  links.forEach(link => link.classList.remove("active"));
+  links[currentIndex].classList.add("active");
 });
