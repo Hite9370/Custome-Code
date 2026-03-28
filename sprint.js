@@ -413,45 +413,52 @@ window.addEventListener("load", () => {
     const leftList = document.querySelector(".home-work_card-list");
     const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
     const cards = gsap.utils.toArray(".home-work_card-image-wrap");
-    const leftContainer = document.querySelector(".home-work_card-left-wrap");
-    const rightContainer = document.querySelector(".home-work_card-right-wrap");
+    
+    // Parent Containers
+    const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
+    const rightParent = document.querySelector(".home-work_card-right-wrap");
 
-    const cardGap = 24; 
     const listGap = 34;
-
-    // Get measurements
-    const cardHeight = cards[0].offsetHeight;
-    const itemHeight = items[0].offsetHeight;
+    const cardGap = 24;
 
     function goToIndex(index) {
-        // Update Classes
         items.forEach((el, i) => el.classList.toggle("active", i === index));
 
-        // Calculate Centers
-        const centerY_Left = (leftContainer.offsetHeight / 2) - (itemHeight / 2) - (index * (itemHeight + listGap));
-        const centerY_Right = (rightContainer.offsetHeight / 2) - (cardHeight / 2) - (index * (cardHeight + cardGap));
+        const itemHeight = items[index].offsetHeight;
+        const cardHeight = cards[index].offsetHeight;
 
-        // Animate Left
+        // Math to calculate distance from top of list to the target item
+        let distanceToItem = 0;
+        for(let i=0; i < index; i++) {
+            distanceToItem += items[i].offsetHeight + listGap;
+        }
+
+        let distanceToCard = 0;
+        for(let i=0; i < index; i++) {
+            distanceToCard += cards[i].offsetHeight + cardGap;
+        }
+
+        // CENTER = (The height of the visible area / 2) - (The height of the clicked item / 2) - distanceToItem
+        const centerY_Left = (leftVisibleWindow.offsetHeight / 2) - (itemHeight / 2) - distanceToItem;
+        const centerY_Right = (rightParent.offsetHeight / 2) - (cardHeight / 2) - distanceToCard;
+
         gsap.to(leftList, {
             y: centerY_Left,
             duration: 0.8,
-            ease: "power3.out"
+            ease: "power3.inOut"
         });
 
-        // Animate Right
         gsap.to(rightWrapper, {
             y: centerY_Right,
             duration: 1,
-            ease: "power3.out"
+            ease: "power3.inOut"
         });
     }
 
-    // Bind Clicks
     items.forEach((item, index) => {
         item.addEventListener("click", () => goToIndex(index));
     });
 
-    // Start at Index 0
     goToIndex(0);
 });
 
