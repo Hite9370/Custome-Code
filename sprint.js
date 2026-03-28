@@ -546,34 +546,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const links = document.querySelectorAll('.home-process_left-list-item');
 const cards = document.querySelectorAll('.home-process_right-card');
-const cardWrappers = document.querySelectorAll('.card-wrapper');
+const wrappers = document.querySelectorAll('.card-wrapper');
 
-// Click on sidebar scrolls smoothly and sets active
-links.forEach(link => {
+// 1. CLICK TO SCROLL (Precise Calculation)
+links.forEach((link, index) => {
   link.addEventListener('click', function(e) {
     e.preventDefault();
     const targetId = this.getAttribute('href').substring(1);
     const targetEl = document.getElementById(targetId);
-    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Calculate position relative to document
+    const rect = targetEl.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const finalPosition = rect.top + scrollTop - 100; // 100 is your sticky top
+
+    window.scrollTo({
+      top: finalPosition,
+      behavior: 'smooth'
+    });
   });
 });
 
-// Update active classes on scroll
-window.addEventListener('scroll', () => {
-  let scrollPos = window.scrollY + 120; // 120 to trigger a bit after top
+// 2. THE DUAL-DIRECTION SCROLL LOGIC
+function handleScroll() {
+  let activeIndex = 0;
+  const stickyThreshold = 120; // The point (in pixels) where the card "sticks"
 
-  cardWrappers.forEach((wrapper, index) => {
-    const top = wrapper.offsetTop;
-    const bottom = top + wrapper.offsetHeight;
+  wrappers.forEach((wrapper, index) => {
+    const rect = wrapper.getBoundingClientRect();
 
-    if (scrollPos >= top && scrollPos < bottom) {
-      // Activate left link
-      links.forEach(l => l.classList.remove('active'));
-      links[index].classList.add('active');
-
-      // Activate right card
-      cards.forEach(c => c.classList.remove('active'));
-      cards[index].classList.add('active');
+    // LOGIC: 
+    // If the top of the wrapper has hit the sticky point 
+    // AND the bottom hasn't left the sticky point yet...
+    if (rect.top <= stickyThreshold && rect.bottom > stickyThreshold) {
+      activeIndex = index;
     }
   });
-});
+
+  // Update Sidebar Links
+  links.forEach((link, i) => {
+    link.classList.toggle('active', i === activeIndex);
+  });
+
+  // Update Right Cards
+  cards.forEach((card, i) => {
+    card.classList.toggle('active', i === activeIndex);
+  });
+}
+
+// Listen for scroll and initial load
+window.addEventListener('scroll', handleScroll);
+window.addEventListener('DOMContentLoaded', handleScroll);
