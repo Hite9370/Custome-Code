@@ -1,3 +1,7 @@
 .home-work_card-list-item.active .home-work_card-list-icon-wrap{
       opacity: 100%;
 }
+
+.home-process_left-list-item.active .home-process_left-list-dot{
+      opacity: 100%;
+}
