@@ -566,7 +566,6 @@ dragArea.addEventListener("mouseleave", () => {
 
 
 
-
 window.addEventListener("load", () => {
     const items = gsap.utils.toArray(".home-work_card-list-item");
     const leftList = document.querySelector(".home-work_card-list");
@@ -583,43 +582,63 @@ window.addEventListener("load", () => {
         return window.innerWidth <= 767;
     }
 
+    // ✅ FIX: Add padding so first/last item can center
+    function setListPadding() {
+        if (isMobile()) {
+            const containerHeight = leftVisibleWindow.clientHeight;
+            const itemHeight = items[0].clientHeight;
+
+            const padding = (containerHeight / 2) - (itemHeight / 2);
+
+            leftList.style.paddingTop = padding + "px";
+            leftList.style.paddingBottom = padding + "px";
+        } else {
+            leftList.style.paddingTop = "0px";
+            leftList.style.paddingBottom = "0px";
+        }
+    }
+
     function goToIndex(index) {
 
         items.forEach((el, i) => el.classList.toggle("active", i === index));
 
-        // ✅ MOBILE (<=767)
-       if (isMobile()) {
+        // ✅ MOBILE
+        if (isMobile()) {
 
-    // stop GSAP transforms
-    gsap.set(leftList, { y: 0 });
-    gsap.set(rightWrapper, { y: 0 });
+            // stop GSAP transforms
+            gsap.set(leftList, { y: 0 });
+            gsap.set(rightWrapper, { y: 0 });
 
-    // ✅ SCROLL ONLY INSIDE LIST (not whole page)
-    const container = leftVisibleWindow;
-    const item = items[index];
+            const container = leftVisibleWindow;
+            const item = items[index];
 
-    const offsetTop = item.offsetTop;
-    const itemHeight = item.offsetHeight;
-    const containerHeight = container.offsetHeight;
+            // accurate position
+            const containerRect = container.getBoundingClientRect();
+            const itemRect = item.getBoundingClientRect();
+            const currentScroll = container.scrollTop;
 
-    const scrollPosition =
-        offsetTop - (containerHeight / 2) + (itemHeight / 2);
+            const offset =
+                itemRect.top - containerRect.top + currentScroll;
 
-    container.scrollTo({
-        top: scrollPosition,
-        behavior: "smooth"
-    });
+            const scrollPosition =
+                offset - (container.clientHeight / 2) + (item.clientHeight / 2);
 
-    // ✅ RIGHT SIDE SCROLL (horizontal only, no vertical jump)
-    cards[index].scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest" // 🔥 IMPORTANT FIX
-    });
+            container.scrollTo({
+                top: scrollPosition,
+                behavior: "smooth"
+            });
 
-    return;
-}
-        // ✅ DESKTOP (your original logic)
+            // right side scroll
+            cards[index].scrollIntoView({
+                behavior: "smooth",
+                inline: "center",
+                block: "nearest"
+            });
+
+            return;
+        }
+
+        // ✅ DESKTOP (original logic)
         const itemHeight = items[index].offsetHeight;
         const cardHeight = cards[index].offsetHeight;
 
@@ -656,19 +675,22 @@ window.addEventListener("load", () => {
         });
     }
 
+    // click events
     items.forEach((item, index) => {
         item.addEventListener("click", () => goToIndex(index));
     });
 
     // init
+    setListPadding();
     goToIndex(0);
 
-    // handle resize
+    // resize fix
     window.addEventListener("resize", () => {
+        setListPadding();
         goToIndex(0);
     });
-});
 
+});
 
 
 
