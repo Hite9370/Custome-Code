@@ -408,39 +408,125 @@ dragArea.addEventListener("mouseleave", () => {
 // });
 
 
+// window.addEventListener("load", () => {
+//     const items = gsap.utils.toArray(".home-work_card-list-item");
+//     const leftList = document.querySelector(".home-work_card-list");
+//     const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
+//     const cards = gsap.utils.toArray(".home-work_card-image-wrap");
+    
+//     // Parent Containers
+//     const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
+//     const rightParent = document.querySelector(".home-work_card-right-wrap");
+
+//     const listGap = 34;
+//     const cardGap = 24;
+
+//     function goToIndex(index) {
+//         items.forEach((el, i) => el.classList.toggle("active", i === index));
+
+//         const itemHeight = items[index].offsetHeight;
+//         const cardHeight = cards[index].offsetHeight;
+
+//         // Math to calculate distance from top of list to the target item
+//         let distanceToItem = 0;
+//         for(let i=0; i < index; i++) {
+//             distanceToItem += items[i].offsetHeight + listGap;
+//         }
+
+//         let distanceToCard = 0;
+//         for(let i=0; i < index; i++) {
+//             distanceToCard += cards[i].offsetHeight + cardGap;
+//         }
+
+//         // CENTER = (The height of the visible area / 2) - (The height of the clicked item / 2) - distanceToItem
+//         const centerY_Left = (leftVisibleWindow.offsetHeight / 2) - (itemHeight / 2) - distanceToItem;
+//         const centerY_Right = (rightParent.offsetHeight / 2) - (cardHeight / 2) - distanceToCard;
+
+//         gsap.to(leftList, {
+//             y: centerY_Left,
+//             duration: 0.8,
+//             ease: "power3.inOut"
+//         });
+
+//         gsap.to(rightWrapper, {
+//             y: centerY_Right,
+//             duration: 1,
+//             ease: "power3.inOut"
+//         });
+//     }
+
+//     items.forEach((item, index) => {
+//         item.addEventListener("click", () => goToIndex(index));
+//     });
+
+//     goToIndex(0);
+// });
+
 window.addEventListener("load", () => {
     const items = gsap.utils.toArray(".home-work_card-list-item");
     const leftList = document.querySelector(".home-work_card-list");
     const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
     const cards = gsap.utils.toArray(".home-work_card-image-wrap");
     
-    // Parent Containers
     const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
     const rightParent = document.querySelector(".home-work_card-right-wrap");
 
     const listGap = 34;
     const cardGap = 24;
 
+    function isMobile() {
+        return window.innerWidth <= 767;
+    }
+
     function goToIndex(index) {
+
         items.forEach((el, i) => el.classList.toggle("active", i === index));
 
+        // ✅ MOBILE (<=767)
+        if (isMobile()) {
+
+            // stop GSAP transforms
+            gsap.set(leftList, { y: 0 });
+            gsap.set(rightWrapper, { y: 0 });
+
+            // scroll LEFT list
+            items[index].scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            // scroll RIGHT images (horizontal)
+            cards[index].scrollIntoView({
+                behavior: "smooth",
+                inline: "center"
+            });
+
+            return;
+        }
+
+        // ✅ DESKTOP (your original logic)
         const itemHeight = items[index].offsetHeight;
         const cardHeight = cards[index].offsetHeight;
 
-        // Math to calculate distance from top of list to the target item
         let distanceToItem = 0;
-        for(let i=0; i < index; i++) {
+        for (let i = 0; i < index; i++) {
             distanceToItem += items[i].offsetHeight + listGap;
         }
 
         let distanceToCard = 0;
-        for(let i=0; i < index; i++) {
+        for (let i = 0; i < index; i++) {
             distanceToCard += cards[i].offsetHeight + cardGap;
         }
 
-        // CENTER = (The height of the visible area / 2) - (The height of the clicked item / 2) - distanceToItem
-        const centerY_Left = (leftVisibleWindow.offsetHeight / 2) - (itemHeight / 2) - distanceToItem;
-        const centerY_Right = (rightParent.offsetHeight / 2) - (cardHeight / 2) - distanceToCard;
+        const centerY_Left =
+            (leftVisibleWindow.offsetHeight / 2) -
+            (itemHeight / 2) -
+            distanceToItem;
+
+        const centerY_Right =
+            (rightParent.offsetHeight / 2) -
+            (cardHeight / 2) -
+            distanceToCard;
 
         gsap.to(leftList, {
             y: centerY_Left,
@@ -459,7 +545,13 @@ window.addEventListener("load", () => {
         item.addEventListener("click", () => goToIndex(index));
     });
 
+    // init
     goToIndex(0);
+
+    // handle resize
+    window.addEventListener("resize", () => {
+        goToIndex(0);
+    });
 });
 
 
