@@ -5,3 +5,38 @@
 .home-process_left-list-item.active .home-process_left-list-dot{
       opacity: 100%;
 }
+
+
+/* 🔝 TOP GRADIENT */
+.home-work_card-list-wrap::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 60px;
+  z-index: 2;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    #111212 0%,
+    rgba(17, 18, 18, 0) 100%
+  );
+}
+
+/* 🔻 BOTTOM GRADIENT */
+.home-work_card-list-wrap::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 60px;
+  z-index: 2;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(17, 18, 18, 0) 0.48%,
+    #111212 100%
+  );
+}
