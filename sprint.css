@@ -50,3 +50,53 @@
       }
 }
 
+/* Common scroll behavior */
+.home-work_card-list-wrap,
+.home-work_card-image-wrapper {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #444 transparent;
+}
+
+/* width of scrollbar */
+.home-work_card-list-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* track */
+.home-work_card-list-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* thumb */
+.home-work_card-list-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #666, #222);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+/* hover */
+.home-work_card-list-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #888, #333);
+}
+
+/* height of scrollbar */
+.home-work_card-image-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* track */
+.home-work_card-image-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* thumb */
+.home-work_card-image-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #666, #222);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+/* hover */
+.home-work_card-image-wrapper::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #888, #333);
+}
