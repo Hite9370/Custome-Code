@@ -13,7 +13,7 @@
   position: sticky;
   top: 0;
   display: block;
-  height: 60px;
+  height: 300px;
   z-index: 2;
   pointer-events: none;
 
@@ -30,7 +30,7 @@
   position: sticky;
   bottom: 0;
   display: block;
-  height: 60px;
+  height: 300px;
   z-index: 2;
   pointer-events: none;
 
@@ -40,3 +40,13 @@
     #111212 100%
   );
 }
+@media (max-width: 767px) {
+
+      .home-work_card-list-wrap::before {
+              height: 80px;
+      }
+      .home-work_card-list-wrap::after {
+              height: 80px;
+      }
+}
+
