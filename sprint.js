@@ -1198,6 +1198,7 @@ const pricingSwiper = new Swiper(".pricingswiper", {
       },
       1200: {
         slidesPerView: 3.5,
+        spaceBetween: 34,
       }
     }
   });
