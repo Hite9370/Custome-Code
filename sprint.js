@@ -562,10 +562,6 @@ dragArea.addEventListener("mouseleave", () => {
 
 
 
-
-
-
-
 window.addEventListener("load", () => {
     const items = gsap.utils.toArray(".home-work_card-list-item");
     const leftList = document.querySelector(".home-work_card-list");
@@ -582,37 +578,26 @@ window.addEventListener("load", () => {
         return window.innerWidth <= 767;
     }
 
-    // ✅ FIX: Add padding so first/last item can center
-    function setListPadding() {
-        if (isMobile()) {
-            const containerHeight = leftVisibleWindow.clientHeight;
-            const itemHeight = items[0].clientHeight;
+    let userClicked = false;
 
-            const padding = (containerHeight / 2) - (itemHeight / 2);
+    function goToIndex(index, isUserAction = false) {
 
-            leftList.style.paddingTop = padding + "px";
-            leftList.style.paddingBottom = padding + "px";
-        } else {
-            leftList.style.paddingTop = "0px";
-            leftList.style.paddingBottom = "0px";
-        }
-    }
-
-    function goToIndex(index) {
+        if (isUserAction) userClicked = true;
 
         items.forEach((el, i) => el.classList.toggle("active", i === index));
 
         // ✅ MOBILE
         if (isMobile()) {
 
-            // stop GSAP transforms
+            // ❌ block auto scroll
+            if (!isUserAction) return;
+
             gsap.set(leftList, { y: 0 });
             gsap.set(rightWrapper, { y: 0 });
 
             const container = leftVisibleWindow;
             const item = items[index];
 
-            // accurate position
             const containerRect = container.getBoundingClientRect();
             const itemRect = item.getBoundingClientRect();
             const currentScroll = container.scrollTop;
@@ -628,7 +613,6 @@ window.addEventListener("load", () => {
                 behavior: "smooth"
             });
 
-            // right side scroll
             cards[index].scrollIntoView({
                 behavior: "smooth",
                 inline: "center",
@@ -638,7 +622,7 @@ window.addEventListener("load", () => {
             return;
         }
 
-        // ✅ DESKTOP (original logic)
+        // ✅ DESKTOP
         const itemHeight = items[index].offsetHeight;
         const cardHeight = cards[index].offsetHeight;
 
@@ -675,22 +659,154 @@ window.addEventListener("load", () => {
         });
     }
 
-    // click events
+    // ✅ CLICK (important fix)
     items.forEach((item, index) => {
-        item.addEventListener("click", () => goToIndex(index));
+        item.addEventListener("click", () => goToIndex(index, true));
     });
 
-    // init
-    setListPadding();
-    goToIndex(0);
-
-    // resize fix
-    window.addEventListener("resize", () => {
-        setListPadding();
+    // ✅ INIT
+    if (!isMobile()) {
         goToIndex(0);
+    }
+
+    // ✅ RESIZE (safe)
+    window.addEventListener("resize", () => {
+        // only reset transforms, no scroll
+        if (isMobile()) {
+            gsap.set(leftList, { y: 0 });
+            gsap.set(rightWrapper, { y: 0 });
+        }
     });
 
 });
+
+
+
+// window.addEventListener("load", () => {
+//     const items = gsap.utils.toArray(".home-work_card-list-item");
+//     const leftList = document.querySelector(".home-work_card-list");
+//     const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
+//     const cards = gsap.utils.toArray(".home-work_card-image-wrap");
+    
+//     const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
+//     const rightParent = document.querySelector(".home-work_card-right-wrap");
+
+//     const listGap = 34;
+//     const cardGap = 24;
+
+//     function isMobile() {
+//         return window.innerWidth <= 767;
+//     }
+
+//     // ✅ FIX: Add padding so first/last item can center
+//     function setListPadding() {
+//         if (isMobile()) {
+//             const containerHeight = leftVisibleWindow.clientHeight;
+//             const itemHeight = items[0].clientHeight;
+
+//             const padding = (containerHeight / 2) - (itemHeight / 2);
+
+//             leftList.style.paddingTop = padding + "px";
+//             leftList.style.paddingBottom = padding + "px";
+//         } else {
+//             leftList.style.paddingTop = "0px";
+//             leftList.style.paddingBottom = "0px";
+//         }
+//     }
+
+//     function goToIndex(index) {
+
+//         items.forEach((el, i) => el.classList.toggle("active", i === index));
+
+//         // ✅ MOBILE
+//         if (isMobile()) {
+
+//             // stop GSAP transforms
+//             gsap.set(leftList, { y: 0 });
+//             gsap.set(rightWrapper, { y: 0 });
+
+//             const container = leftVisibleWindow;
+//             const item = items[index];
+
+//             // accurate position
+//             const containerRect = container.getBoundingClientRect();
+//             const itemRect = item.getBoundingClientRect();
+//             const currentScroll = container.scrollTop;
+
+//             const offset =
+//                 itemRect.top - containerRect.top + currentScroll;
+
+//             const scrollPosition =
+//                 offset - (container.clientHeight / 2) + (item.clientHeight / 2);
+
+//             container.scrollTo({
+//                 top: scrollPosition,
+//                 behavior: "smooth"
+//             });
+
+//             // right side scroll
+//             cards[index].scrollIntoView({
+//                 behavior: "smooth",
+//                 inline: "center",
+//                 block: "nearest"
+//             });
+
+//             return;
+//         }
+
+//         // ✅ DESKTOP (original logic)
+//         const itemHeight = items[index].offsetHeight;
+//         const cardHeight = cards[index].offsetHeight;
+
+//         let distanceToItem = 0;
+//         for (let i = 0; i < index; i++) {
+//             distanceToItem += items[i].offsetHeight + listGap;
+//         }
+
+//         let distanceToCard = 0;
+//         for (let i = 0; i < index; i++) {
+//             distanceToCard += cards[i].offsetHeight + cardGap;
+//         }
+
+//         const centerY_Left =
+//             (leftVisibleWindow.offsetHeight / 2) -
+//             (itemHeight / 2) -
+//             distanceToItem;
+
+//         const centerY_Right =
+//             (rightParent.offsetHeight / 2) -
+//             (cardHeight / 2) -
+//             distanceToCard;
+
+//         gsap.to(leftList, {
+//             y: centerY_Left,
+//             duration: 0.8,
+//             ease: "power3.inOut"
+//         });
+
+//         gsap.to(rightWrapper, {
+//             y: centerY_Right,
+//             duration: 1,
+//             ease: "power3.inOut"
+//         });
+//     }
+
+//     // click events
+//     items.forEach((item, index) => {
+//         item.addEventListener("click", () => goToIndex(index));
+//     });
+
+//     // init
+//     setListPadding();
+//     goToIndex(0);
+
+//     // resize fix
+//     window.addEventListener("resize", () => {
+//         setListPadding();
+//         goToIndex(0);
+//     });
+
+// });
 
 
 
