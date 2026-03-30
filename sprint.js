@@ -1175,7 +1175,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const pricingSwiper = new Swiper(".pricingswiper", {
     slidesPerView: 3.5,
-    spaceBetween: 20,
+    spaceBetween: 34,
     loop: false,
 
     navigation: {
@@ -1198,7 +1198,7 @@ const pricingSwiper = new Swiper(".pricingswiper", {
       },
       1200: {
         slidesPerView: 3.5,
-        spaceBetween: 34,
+        spaceBetween: 24,
       }
     }
   });
