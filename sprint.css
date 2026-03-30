@@ -50,6 +50,14 @@
       }
 }
 
+
+
+.home-build_list-item.active .heading-style-h4.text-weight-normal{
+      font-weight: 500;
+}
+
+
+
 /* Common scroll behavior */
 .home-work_card-list-wrap,
 .home-work_card-image-wrapper {
