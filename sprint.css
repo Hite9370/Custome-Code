@@ -8,7 +8,7 @@
 
 
 /* 🔝 TOP GRADIENT */
-.home-work_card-list-wrap::before {
+/* .home-work_card-list-wrap::before {
   content: "";
   position: sticky;
   top: 0;
@@ -25,7 +25,7 @@
 }
 
 /* 🔻 BOTTOM GRADIENT */
-.home-work_card-list-wrap::after {
+/* .home-work_card-list-wrap::after {
   content: "";
   position: sticky;
   bottom: 0;
@@ -39,7 +39,7 @@
     rgba(17, 18, 18, 0) 0.48%,
     #111212 100%
   );
-}
+} */ 
 @media (max-width: 767px) {
 
       .home-work_card-list-wrap::before {
