@@ -625,122 +625,211 @@ dragArea.addEventListener("mouseleave", () => {
 
 
 
-window.addEventListener("load", () => {
-    const items = gsap.utils.toArray(".home-work_card-list-item");
-    const leftList = document.querySelector(".home-work_card-list");
-    const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
-    const cards = gsap.utils.toArray(".home-work_card-image-wrap");
+// window.addEventListener("load", () => {
+//     const items = gsap.utils.toArray(".home-work_card-list-item");
+//     const leftList = document.querySelector(".home-work_card-list");
+//     const rightWrapper = document.querySelector(".home-work_card-image-wrapper");
+//     const cards = gsap.utils.toArray(".home-work_card-image-wrap");
     
-    const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
-    const rightParent = document.querySelector(".home-work_card-right-wrap");
+//     const leftVisibleWindow = document.querySelector(".home-work_card-list-wrap");
+//     const rightParent = document.querySelector(".home-work_card-right-wrap");
 
-    const listGap = 34;
-    const cardGap = 24;
+//     const listGap = 34;
+//     const cardGap = 24;
 
-    function isMobile() {
-        return window.innerWidth <= 767;
-    }
+//     function isMobile() {
+//         return window.innerWidth <= 767;
+//     }
 
-    let userClicked = false;
+//     let userClicked = false;
 
-    function goToIndex(index, isUserAction = false) {
+//     function goToIndex(index, isUserAction = false) {
 
-        if (isUserAction) userClicked = true;
+//         if (isUserAction) userClicked = true;
 
-        items.forEach((el, i) => el.classList.toggle("active", i === index));
+//         items.forEach((el, i) => el.classList.toggle("active", i === index));
 
-        // ✅ MOBILE
-        if (isMobile()) {
+//         // ✅ MOBILE
+//         if (isMobile()) {
 
-            // ❌ block auto scroll
-            if (!isUserAction) return;
+//             // ❌ block auto scroll
+//             if (!isUserAction) return;
 
-            gsap.set(leftList, { y: 0 });
-            gsap.set(rightWrapper, { y: 0 });
+//             gsap.set(leftList, { y: 0 });
+//             gsap.set(rightWrapper, { y: 0 });
 
-            const container = leftVisibleWindow;
-            const item = items[index];
+//             const container = leftVisibleWindow;
+//             const item = items[index];
 
-            const containerRect = container.getBoundingClientRect();
-            const itemRect = item.getBoundingClientRect();
-            const currentScroll = container.scrollTop;
+//             const containerRect = container.getBoundingClientRect();
+//             const itemRect = item.getBoundingClientRect();
+//             const currentScroll = container.scrollTop;
 
-            const offset =
-                itemRect.top - containerRect.top + currentScroll;
+//             const offset =
+//                 itemRect.top - containerRect.top + currentScroll;
 
-            const scrollPosition =
-                offset - (container.clientHeight / 2) + (item.clientHeight / 2);
+//             const scrollPosition =
+//                 offset - (container.clientHeight / 2) + (item.clientHeight / 2);
 
-            container.scrollTo({
-                top: scrollPosition,
-                behavior: "smooth"
-            });
+//             container.scrollTo({
+//                 top: scrollPosition,
+//                 behavior: "smooth"
+//             });
 
-            cards[index].scrollIntoView({
-                behavior: "smooth",
-                inline: "center",
-                block: "nearest"
-            });
+//             cards[index].scrollIntoView({
+//                 behavior: "smooth",
+//                 inline: "center",
+//                 block: "nearest"
+//             });
 
-            return;
-        }
+//             return;
+//         }
 
-        // ✅ DESKTOP
-        const itemHeight = items[index].offsetHeight;
-        const cardHeight = cards[index].offsetHeight;
+//         // ✅ DESKTOP
+//         const itemHeight = items[index].offsetHeight;
+//         const cardHeight = cards[index].offsetHeight;
 
-        let distanceToItem = 0;
-        for (let i = 0; i < index; i++) {
-            distanceToItem += items[i].offsetHeight + listGap;
-        }
+//         let distanceToItem = 0;
+//         for (let i = 0; i < index; i++) {
+//             distanceToItem += items[i].offsetHeight + listGap;
+//         }
 
-        let distanceToCard = 0;
-        for (let i = 0; i < index; i++) {
-            distanceToCard += cards[i].offsetHeight + cardGap;
-        }
+//         let distanceToCard = 0;
+//         for (let i = 0; i < index; i++) {
+//             distanceToCard += cards[i].offsetHeight + cardGap;
+//         }
 
-        const centerY_Left =
-            (leftVisibleWindow.offsetHeight / 2) -
-            (itemHeight / 2) -
-            distanceToItem;
+//         const centerY_Left =
+//             (leftVisibleWindow.offsetHeight / 2) -
+//             (itemHeight / 2) -
+//             distanceToItem;
 
-        const centerY_Right =
-            (rightParent.offsetHeight / 2) -
-            (cardHeight / 2) -
-            distanceToCard;
+//         const centerY_Right =
+//             (rightParent.offsetHeight / 2) -
+//             (cardHeight / 2) -
+//             distanceToCard;
 
-        gsap.to(leftList, {
-            y: centerY_Left,
-            duration: 0.8,
-            ease: "power3.inOut"
+//         gsap.to(leftList, {
+//             y: centerY_Left,
+//             duration: 0.8,
+//             ease: "power3.inOut"
+//         });
+
+//         gsap.to(rightWrapper, {
+//             y: centerY_Right,
+//             duration: 1,
+//             ease: "power3.inOut"
+//         });
+//     }
+
+//     // ✅ CLICK (important fix)
+//     items.forEach((item, index) => {
+//         item.addEventListener("click", () => goToIndex(index, true));
+//     });
+
+//     // ✅ INIT
+//     if (!isMobile()) {
+//         goToIndex(0);
+//     }
+
+//     // ✅ RESIZE (safe)
+//     window.addEventListener("resize", () => {
+//         // only reset transforms, no scroll
+//         if (isMobile()) {
+//             gsap.set(leftList, { y: 0 });
+//             gsap.set(rightWrapper, { y: 0 });
+//         }
+//     });
+
+// });
+
+
+window.addEventListener("load", () => {
+    const list = document.querySelector(".home-work_card-list");
+    const wrapper = document.querySelector(".home-work_card-image-wrapper");
+    const listWrap = document.querySelector(".home-work_card-list-wrap");
+    const rightWrap = document.querySelector(".home-work_card-right-wrap");
+
+    // 1. Setup the Triple Loop (Original + Clone + Clone)
+    const originalHTML = list.innerHTML;
+    const originalImgHTML = wrapper.innerHTML;
+    
+    list.innerHTML = originalHTML + originalHTML + originalHTML;
+    wrapper.innerHTML = originalImgHTML + originalImgHTML + originalImgHTML;
+
+    let items = Array.from(document.querySelectorAll(".home-work_card-list-item"));
+    let cards = Array.from(document.querySelectorAll(".home-work_card-image-wrap"));
+    
+    const count = items.length / 3; // The actual number of unique items
+    let index = count; // Start at the first item of the middle set
+    let isMoving = false;
+
+    function goTo(i, animate = true) {
+        if (isMoving && animate) return;
+        index = i;
+
+        // Update Active States based on the real index
+        items.forEach((item, idx) => {
+            item.classList.toggle("active", idx % count === index % count);
         });
 
-        gsap.to(rightWrapper, {
-            y: centerY_Right,
-            duration: 1,
-            ease: "power3.inOut"
-        });
-    }
+        // Calculate positions
+        const textItem = items[index];
+        const cardItem = cards[index];
 
-    // ✅ CLICK (important fix)
-    items.forEach((item, index) => {
-        item.addEventListener("click", () => goToIndex(index, true));
-    });
+        // Vertical Logic for Text
+        const textY = -(textItem.offsetTop - (listWrap.clientHeight / 2) + (textItem.clientHeight / 2));
+        
+        // Vertical Logic for Images
+        const imgY = -(cardItem.offsetTop - (rightWrap.clientHeight / 2) + (cardItem.clientHeight / 2));
 
-    // ✅ INIT
-    if (!isMobile()) {
-        goToIndex(0);
-    }
-
-    // ✅ RESIZE (safe)
-    window.addEventListener("resize", () => {
-        // only reset transforms, no scroll
-        if (isMobile()) {
-            gsap.set(leftList, { y: 0 });
-            gsap.set(rightWrapper, { y: 0 });
+        if (animate) {
+            isMoving = true;
+            gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
+            gsap.to(wrapper, { 
+                y: imgY, 
+                duration: 1.2, 
+                ease: "power3.inOut",
+                onComplete: () => {
+                    isMoving = false;
+                    checkBoundary();
+                }
+            });
+        } else {
+            gsap.set(list, { y: textY });
+            gsap.set(wrapper, { y: imgY });
         }
+    }
+
+    // This function handles the "Invisble Jump" to keep it infinite
+    function checkBoundary() {
+        // If we reach the start of the 3rd set, jump back to the start of the 2nd set
+        if (index >= count * 2) {
+            index = count;
+            goTo(index, false);
+        }
+        // If we go backwards to the 1st set, jump to the 2nd set
+        if (index < count) {
+            index = count * 2 - 1;
+            goTo(index, false);
+        }
+    }
+
+    // Auto Loop
+    let autoPlay = setInterval(() => {
+        goTo(index + 1);
+    }, 3000);
+
+    // Click to Navigate
+    items.forEach((item, i) => {
+        item.addEventListener("click", () => {
+            clearInterval(autoPlay);
+            goTo(i);
+        });
     });
 
+    // Initialize
+    goTo(index, false);
 });
 
 
