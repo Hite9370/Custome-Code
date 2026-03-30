@@ -100,3 +100,10 @@
 .home-work_card-image-wrapper::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(90deg, #888, #333);
 }
+
+.home-faq_item.active .open{      
+      display: flex;
+}
+.home-faq_item.active .close{      
+      display: none;
+}
