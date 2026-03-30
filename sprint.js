@@ -1058,8 +1058,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-const cards = document.querySelectorAll('.card');
-const navItems = document.querySelectorAll('.nav-item');
+const cards = document.querySelectorAll('.home-process_card');
+const navItems = document.querySelectorAll('.home-process_left-list-item');
 
 function updateActive() {
   let currentId = null;
@@ -1067,41 +1067,52 @@ function updateActive() {
   cards.forEach((card) => {
     const rect = card.getBoundingClientRect();
 
-    // Active zone = middle of screen
-    if (rect.top <= window.innerHeight * 0.4 && rect.bottom >= window.innerHeight * 0.4) {
+    // middle trigger zone
+    if (
+      rect.top <= window.innerHeight * 0.4 &&
+      rect.bottom >= window.innerHeight * 0.4
+    ) {
       currentId = card.id;
     }
   });
 
   if (currentId) {
-    navItems.forEach((item) => item.classList.remove('active'));
+    navItems.forEach((item) => {
+      item.classList.remove('active');
+      item.classList.remove('w--current'); // remove Webflow default
+    });
 
     const activeItem = document.querySelector(
-      `.nav-item[href="#${currentId}"]`
+      `.home-process_left-list-item[href="#${currentId}"]`
     );
 
-    if (activeItem) activeItem.classList.add('active');
+    if (activeItem) {
+      activeItem.classList.add('active');
+    }
   }
 }
 
-// Smooth + performant scroll listener
+// scroll listener (smooth + performant)
 window.addEventListener('scroll', () => {
   requestAnimationFrame(updateActive);
 });
 
-// Run on load
-updateActive();
+// run on load
+window.addEventListener('load', updateActive);
 
 
-// Smooth scroll
+// OPTIONAL: smooth scroll
 navItems.forEach((item) => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
+
     const target = document.querySelector(item.getAttribute('href'));
 
-    target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   });
 });
