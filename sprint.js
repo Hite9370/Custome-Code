@@ -1,4 +1,67 @@
 
+const cards = document.querySelectorAll('.home-process_card');
+const navItems = document.querySelectorAll('.home-process_left-list-item');
+
+function updateActive() {
+  let currentId = null;
+
+  cards.forEach((card) => {
+    const rect = card.getBoundingClientRect();
+
+    // middle trigger zone
+    if (
+      rect.top <= window.innerHeight * 0.4 &&
+      rect.bottom >= window.innerHeight * 0.4
+    ) {
+      currentId = card.id;
+    }
+  });
+
+  if (currentId) {
+    navItems.forEach((item) => {
+      item.classList.remove('active');
+      item.classList.remove('w--current'); // remove Webflow default
+    });
+
+    const activeItem = document.querySelector(
+      `.home-process_left-list-item[href="#${currentId}"]`
+    );
+
+    if (activeItem) {
+      activeItem.classList.add('active');
+    }
+  }
+}
+
+// scroll listener (smooth + performant)
+window.addEventListener('scroll', () => {
+  requestAnimationFrame(updateActive);
+});
+
+// run on load
+window.addEventListener('load', updateActive);
+
+
+// OPTIONAL: smooth scroll
+navItems.forEach((item) => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const target = document.querySelector(item.getAttribute('href'));
+
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+  
+
+
+
 //Our Work
 
 /*const items = gsap.utils.toArray(".home-work_card-list-item");
@@ -1058,61 +1121,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-const cards = document.querySelectorAll('.home-process_card');
-const navItems = document.querySelectorAll('.home-process_left-list-item');
 
-function updateActive() {
-  let currentId = null;
-
-  cards.forEach((card) => {
-    const rect = card.getBoundingClientRect();
-
-    // middle trigger zone
-    if (
-      rect.top <= window.innerHeight * 0.4 &&
-      rect.bottom >= window.innerHeight * 0.4
-    ) {
-      currentId = card.id;
-    }
-  });
-
-  if (currentId) {
-    navItems.forEach((item) => {
-      item.classList.remove('active');
-      item.classList.remove('w--current'); // remove Webflow default
-    });
-
-    const activeItem = document.querySelector(
-      `.home-process_left-list-item[href="#${currentId}"]`
-    );
-
-    if (activeItem) {
-      activeItem.classList.add('active');
-    }
-  }
-}
-
-// scroll listener (smooth + performant)
-window.addEventListener('scroll', () => {
-  requestAnimationFrame(updateActive);
-});
-
-// run on load
-window.addEventListener('load', updateActive);
-
-
-// OPTIONAL: smooth scroll
-navItems.forEach((item) => {
-  item.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const target = document.querySelector(item.getAttribute('href'));
-
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  });
-});
