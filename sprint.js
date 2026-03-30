@@ -1235,15 +1235,6 @@ const casestudiesswiper = new Swiper(".casestudiesswiper", {
 document.addEventListener("DOMContentLoaded", function () {
   const items = document.querySelectorAll(".home-faq_item");
 
-  // Open first by default
-  if (items.length > 0) {
-    const first = items[0];
-    const firstAns = first.querySelector(".home-faq_item-ans-wrap");
-
-    first.classList.add("active");
-    firstAns.style.maxHeight = firstAns.scrollHeight + "px";
-  }
-
   items.forEach(item => {
     const question = item.querySelector(".home-faq_item-quetion");
     const answer = item.querySelector(".home-faq_item-ans-wrap");
@@ -1271,7 +1262,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-
 
 
 
