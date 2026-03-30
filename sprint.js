@@ -900,7 +900,7 @@ const pricingSwiper = new Swiper(".pricingswiper", {
 
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 1.5,
       },
       480: {
         slidesPerView: 1.5,
@@ -929,7 +929,7 @@ const casestudiesswiper = new Swiper(".casestudiesswiper", {
 
     breakpoints: {
       0: {
-        slidesPerView: 1,
+        slidesPerView: 1.5,
       },
       480: {
         slidesPerView: 1.5,
