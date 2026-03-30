@@ -1,4 +1,64 @@
 
+// const cards = document.querySelectorAll('.home-process_card');
+// const navItems = document.querySelectorAll('.home-process_left-list-item');
+
+// function updateActive() {
+//   let currentId = null;
+
+//   cards.forEach((card) => {
+//     const rect = card.getBoundingClientRect();
+
+//     // middle trigger zone
+//     if (
+//       rect.top <= window.innerHeight * 0.4 &&
+//       rect.bottom >= window.innerHeight * 0.4
+//     ) {
+//       currentId = card.id;
+//     }
+//   });
+
+//   if (currentId) {
+//     navItems.forEach((item) => {
+//       item.classList.remove('active');
+//       item.classList.remove('w--current'); // remove Webflow default
+//     });
+
+//     const activeItem = document.querySelector(
+//       `.home-process_left-list-item[href="#${currentId}"]`
+//     );
+
+//     if (activeItem) {
+//       activeItem.classList.add('active');
+//     }
+//   }
+// }
+
+// // scroll listener (smooth + performant)
+// window.addEventListener('scroll', () => {
+//   requestAnimationFrame(updateActive);
+// });
+
+// // run on load
+// window.addEventListener('load', updateActive);
+
+
+// // OPTIONAL: smooth scroll
+// navItems.forEach((item) => {
+//   item.addEventListener('click', (e) => {
+//     e.preventDefault();
+
+//     const target = document.querySelector(item.getAttribute('href'));
+
+//     if (target) {
+//       target.scrollIntoView({
+//         behavior: 'smooth',
+//         block: 'start'
+//       });
+//     }
+//   });
+// });
+
+
 const cards = document.querySelectorAll('.home-process_card');
 const navItems = document.querySelectorAll('.home-process_left-list-item');
 
@@ -7,57 +67,30 @@ function updateActive() {
 
   cards.forEach((card) => {
     const rect = card.getBoundingClientRect();
+    const stickyTop = parseInt(getComputedStyle(card).top); // each card's sticky top
 
-    // middle trigger zone
-    if (
-      rect.top <= window.innerHeight * 0.4 &&
-      rect.bottom >= window.innerHeight * 0.4
-    ) {
+    // Trigger as soon as card reaches its sticky top
+    if (rect.top <= stickyTop + 10 && rect.bottom > stickyTop + 10) {
       currentId = card.id;
     }
   });
 
   if (currentId) {
-    navItems.forEach((item) => {
-      item.classList.remove('active');
-      item.classList.remove('w--current'); // remove Webflow default
-    });
+    navItems.forEach((item) => item.classList.remove('active'));
 
     const activeItem = document.querySelector(
       `.home-process_left-list-item[href="#${currentId}"]`
     );
 
-    if (activeItem) {
-      activeItem.classList.add('active');
-    }
+    if (activeItem) activeItem.classList.add('active');
   }
 }
 
-// scroll listener (smooth + performant)
-window.addEventListener('scroll', () => {
-  requestAnimationFrame(updateActive);
-});
-
-// run on load
+window.addEventListener('scroll', () => requestAnimationFrame(updateActive));
 window.addEventListener('load', updateActive);
 
-
-// OPTIONAL: smooth scroll
-navItems.forEach((item) => {
-  item.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const target = document.querySelector(item.getAttribute('href'));
-
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  });
-});
-
+// disable clicking
+navItems.forEach((item) => item.addEventListener('click', (e) => e.preventDefault()));
   
 
 
