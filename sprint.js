@@ -1038,11 +1038,82 @@ window.addEventListener("load", () => {
 // });
 
 
+// document.addEventListener("DOMContentLoaded", function () {
+//   const tabs = document.querySelectorAll(".home-build_list-item");
+//   const cards = document.querySelectorAll(".home-build_image-card");
+//   const indicator = document.querySelector(".tabs-indicator");
+//   const numberEl = document.querySelector(".heading-style-h4");
+
+//   let currentIndex = 0;
+//   let autoSwitch;
+
+//   function setActive(index) {
+//     currentIndex = index;
+
+//     const activeTab = tabs[index];
+
+//     if (activeTab && indicator) {
+//       indicator.style.height = `${activeTab.offsetHeight}px`;
+//       indicator.style.transform = `translateY(${activeTab.offsetTop}px)`;
+//     }
+
+//     tabs.forEach(tab => tab.classList.remove("active"));
+//     cards.forEach(card => card.classList.remove("active"));
+
+//     activeTab.classList.add("active");
+//     if (cards[index]) cards[index].classList.add("active");
+
+//     numberEl.textContent = (index + 1).toString().padStart(2, "0");
+//   }
+
+//   function startAutoSwitch() {
+//     autoSwitch = setInterval(() => {
+//       let nextIndex = (currentIndex + 1) % tabs.length;
+//       setActive(nextIndex);
+//     }, 4000);
+//   }
+
+//   function resetAutoSwitch() {
+//     clearInterval(autoSwitch);
+//     startAutoSwitch();
+//   }
+
+//   tabs.forEach((tab, index) => {
+//     tab.addEventListener("click", () => {
+//       setActive(index);
+//       resetAutoSwitch();
+//     });
+//   });
+
+//   window.addEventListener("resize", () => {
+//     setActive(currentIndex);
+//   });
+
+//   setActive(0);
+//   startAutoSwitch();
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
-  const tabs = document.querySelectorAll(".home-build_list-item");
-  const cards = document.querySelectorAll(".home-build_image-card");
-  const indicator = document.querySelector(".tabs-indicator");
-  const numberEl = document.querySelector(".heading-style-h4");
+  const wrapper = document.querySelector(".home-build_wrapper");
+
+  const tabs = wrapper.querySelectorAll(".home-build_list-item");
+  const cards = wrapper.querySelectorAll(".home-build_image-card");
+  const indicator = wrapper.querySelector(".tabs-indicator");
+  const numberEl = wrapper.querySelector(".home-build_right-card-num .heading-style-h4");
 
   let currentIndex = 0;
   let autoSwitch;
@@ -1052,18 +1123,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const activeTab = tabs[index];
 
+    // Move indicator
     if (activeTab && indicator) {
       indicator.style.height = `${activeTab.offsetHeight}px`;
       indicator.style.transform = `translateY(${activeTab.offsetTop}px)`;
     }
 
+    // Toggle classes
     tabs.forEach(tab => tab.classList.remove("active"));
     cards.forEach(card => card.classList.remove("active"));
 
-    activeTab.classList.add("active");
+    if (tabs[index]) tabs[index].classList.add("active");
     if (cards[index]) cards[index].classList.add("active");
 
-    numberEl.textContent = (index + 1).toString().padStart(2, "0");
+    // Update number
+    if (numberEl) {
+      numberEl.textContent = (index + 1).toString().padStart(2, "0");
+    }
   }
 
   function startAutoSwitch() {
@@ -1089,6 +1165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setActive(currentIndex);
   });
 
+  // Init
   setActive(0);
   startAutoSwitch();
 });
