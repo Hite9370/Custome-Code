@@ -989,56 +989,119 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-const links = document.querySelectorAll('.home-process_left-list-item');
-const cards = document.querySelectorAll('.home-process_right-card');
-const wrappers = document.querySelectorAll('.home-process_card');
 
-// 1. CLICK TO SCROLL (Precise Calculation)
-links.forEach((link, index) => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('href').substring(1);
-    const targetEl = document.getElementById(targetId);
+
+
+
+
+
+
+
+
+// const links = document.querySelectorAll('.home-process_left-list-item');
+// const cards = document.querySelectorAll('.home-process_right-card');
+// const wrappers = document.querySelectorAll('.home-process_card');
+
+// // 1. CLICK TO SCROLL (Precise Calculation)
+// links.forEach((link, index) => {
+//   link.addEventListener('click', function(e) {
+//     e.preventDefault();
+//     const targetId = this.getAttribute('href').substring(1);
+//     const targetEl = document.getElementById(targetId);
     
-    // Calculate position relative to document
-    const rect = targetEl.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const finalPosition = rect.top + scrollTop - 100; // 100 is your sticky top
+//     // Calculate position relative to document
+//     const rect = targetEl.getBoundingClientRect();
+//     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+//     const finalPosition = rect.top + scrollTop - 100; // 100 is your sticky top
 
-    window.scrollTo({
-      top: finalPosition,
-      behavior: 'smooth'
-    });
-  });
-});
+//     window.scrollTo({
+//       top: finalPosition,
+//       behavior: 'smooth'
+//     });
+//   });
+// });
 
-// 2. THE DUAL-DIRECTION SCROLL LOGIC
-function handleScroll() {
-  let activeIndex = 0;
-  const stickyThreshold = 120; // The point (in pixels) where the card "sticks"
+// // 2. THE DUAL-DIRECTION SCROLL LOGIC
+// function handleScroll() {
+//   let activeIndex = 0;
+//   const stickyThreshold = 120; // The point (in pixels) where the card "sticks"
 
-  wrappers.forEach((wrapper, index) => {
-    const rect = wrapper.getBoundingClientRect();
+//   wrappers.forEach((wrapper, index) => {
+//     const rect = wrapper.getBoundingClientRect();
 
-    // LOGIC: 
-    // If the top of the wrapper has hit the sticky point 
-    // AND the bottom hasn't left the sticky point yet...
-    if (rect.top <= stickyThreshold && rect.bottom > stickyThreshold) {
-      activeIndex = index;
+//     // LOGIC: 
+//     // If the top of the wrapper has hit the sticky point 
+//     // AND the bottom hasn't left the sticky point yet...
+//     if (rect.top <= stickyThreshold && rect.bottom > stickyThreshold) {
+//       activeIndex = index;
+//     }
+//   });
+
+//   // Update Sidebar Links
+//   links.forEach((link, i) => {
+//     link.classList.toggle('active', i === activeIndex);
+//   });
+
+//   // Update Right Cards
+//   cards.forEach((card, i) => {
+//     card.classList.toggle('active', i === activeIndex);
+//   });
+// }
+
+// // Listen for scroll and initial load
+// window.addEventListener('scroll', handleScroll);
+// window.addEventListener('DOMContentLoaded', handleScroll);
+
+
+
+
+
+
+
+const cards = document.querySelectorAll('.card');
+const navItems = document.querySelectorAll('.nav-item');
+
+function updateActive() {
+  let currentId = null;
+
+  cards.forEach((card) => {
+    const rect = card.getBoundingClientRect();
+
+    // Active zone = middle of screen
+    if (rect.top <= window.innerHeight * 0.4 && rect.bottom >= window.innerHeight * 0.4) {
+      currentId = card.id;
     }
   });
 
-  // Update Sidebar Links
-  links.forEach((link, i) => {
-    link.classList.toggle('active', i === activeIndex);
-  });
+  if (currentId) {
+    navItems.forEach((item) => item.classList.remove('active'));
 
-  // Update Right Cards
-  cards.forEach((card, i) => {
-    card.classList.toggle('active', i === activeIndex);
-  });
+    const activeItem = document.querySelector(
+      `.nav-item[href="#${currentId}"]`
+    );
+
+    if (activeItem) activeItem.classList.add('active');
+  }
 }
 
-// Listen for scroll and initial load
-window.addEventListener('scroll', handleScroll);
-window.addEventListener('DOMContentLoaded', handleScroll);
+// Smooth + performant scroll listener
+window.addEventListener('scroll', () => {
+  requestAnimationFrame(updateActive);
+});
+
+// Run on load
+updateActive();
+
+
+// Smooth scroll
+navItems.forEach((item) => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(item.getAttribute('href'));
+
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+});
