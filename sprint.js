@@ -1377,12 +1377,121 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+// window.addEventListener("load", () => {
+//   const list = document.querySelector(".work__list");
+//   const media = document.querySelector(".work__media");
+//   const listMask = document.querySelector(".work__list-mask");
+//   const right = document.querySelector(".work__right");
+
+//   const originalList = list.innerHTML;
+//   const originalMedia = media.innerHTML;
+
+//   list.innerHTML = originalList.repeat(3);
+//   media.innerHTML = originalMedia.repeat(3);
+
+//   const items = [...document.querySelectorAll(".work__item")];
+//   const cards = [...document.querySelectorAll(".work__card")];
+
+//   const count = items.length / 3;
+//   let index = count;
+//   let moving = false;
+
+//   function goTo(i, animate = true) {
+//     if (moving && animate) return;
+
+//     index = i;
+//     const real = index % count;
+
+//     items.forEach((el, idx) => {
+//       el.classList.toggle("active", idx % count === real);
+//     });
+
+//     const isMobile = window.innerWidth <= 767;
+
+//     const itemH = items[0].offsetHeight + 34;
+
+//     const textY =
+//       -(index * itemH) +
+//       (listMask.clientHeight / 2 - itemH / 2);
+
+//     if (animate) {
+//       moving = true;
+
+//       gsap.to(list, { y: textY, duration: 1 });
+
+//       if (isMobile) {
+//         const card = cards[index];
+//         const cRect = card.getBoundingClientRect();
+//         const wRect = right.getBoundingClientRect();
+//         const currentX = gsap.getProperty(media, "x");
+
+//         const x =
+//           currentX +
+//           (wRect.left + wRect.width / 2) -
+//           (cRect.left + cRect.width / 2);
+
+//         gsap.to(media, {
+//           x,
+//           duration: 1.2,
+//           onComplete: () => {
+//             moving = false;
+//             fixLoop();
+//           }
+//         });
+
+//       } else {
+//         const cardH = cards[0].offsetHeight + 40;
+
+//         const y =
+//           -(index * cardH) +
+//           (right.clientHeight / 2 - cards[0].offsetHeight / 2);
+
+//         gsap.to(media, {
+//           y,
+//           duration: 1.2,
+//           onComplete: () => {
+//             moving = false;
+//             fixLoop();
+//           }
+//         });
+//       }
+
+//     } else {
+//       gsap.set(list, { y: textY });
+//     }
+//   }
+
+//   function fixLoop() {
+//     if (index >= count * 2) {
+//       index -= count;
+//       goTo(index, false);
+//     }
+
+//     if (index < count) {
+//       index += count;
+//       goTo(index, false);
+//     }
+//   }
+
+//   setInterval(() => goTo(index + 1), 3000);
+
+//   items.forEach((el, i) => {
+//     el.addEventListener("click", () => goTo(i));
+//   });
+
+//   goTo(index, false);
+// });
+
+
+
+
 window.addEventListener("load", () => {
   const list = document.querySelector(".work__list");
   const media = document.querySelector(".work__media");
   const listMask = document.querySelector(".work__list-mask");
   const right = document.querySelector(".work__right");
 
+  // Clone 3x
   const originalList = list.innerHTML;
   const originalMedia = media.innerHTML;
 
@@ -1393,36 +1502,51 @@ window.addEventListener("load", () => {
   const cards = [...document.querySelectorAll(".work__card")];
 
   const count = items.length / 3;
-  let index = count;
+
+  let position = 0; // 🔥 continuous index
   let moving = false;
 
-  function goTo(i, animate = true) {
+  gsap.config({ force3D: true });
+
+  function goTo(pos, animate = true) {
     if (moving && animate) return;
 
-    index = i;
-    const real = index % count;
+    position = pos;
 
+    // Safe modulo
+    const realIndex = ((position % count) + count) % count;
+
+    // Active state
     items.forEach((el, idx) => {
-      el.classList.toggle("active", idx % count === real);
+      el.classList.toggle("active", idx % count === realIndex);
     });
 
     const isMobile = window.innerWidth <= 767;
 
     const itemH = items[0].offsetHeight + 34;
 
+    // Always render from middle set
+    const visualIndex = position + count;
+
     const textY =
-      -(index * itemH) +
+      -(visualIndex * itemH) +
       (listMask.clientHeight / 2 - itemH / 2);
 
     if (animate) {
       moving = true;
 
-      gsap.to(list, { y: textY, duration: 1 });
+      gsap.to(list, {
+        y: textY,
+        duration: 1,
+        ease: "power3.inOut"
+      });
 
       if (isMobile) {
-        const card = cards[index];
+        const card = cards[visualIndex];
+
         const cRect = card.getBoundingClientRect();
         const wRect = right.getBoundingClientRect();
+
         const currentX = gsap.getProperty(media, "x");
 
         const x =
@@ -1433,26 +1557,22 @@ window.addEventListener("load", () => {
         gsap.to(media, {
           x,
           duration: 1.2,
-          onComplete: () => {
-            moving = false;
-            fixLoop();
-          }
+          ease: "power3.inOut",
+          onComplete: () => (moving = false)
         });
 
       } else {
         const cardH = cards[0].offsetHeight + 40;
 
         const y =
-          -(index * cardH) +
+          -(visualIndex * cardH) +
           (right.clientHeight / 2 - cards[0].offsetHeight / 2);
 
         gsap.to(media, {
           y,
           duration: 1.2,
-          onComplete: () => {
-            moving = false;
-            fixLoop();
-          }
+          ease: "power3.inOut",
+          onComplete: () => (moving = false)
         });
       }
 
@@ -1461,23 +1581,18 @@ window.addEventListener("load", () => {
     }
   }
 
-  function fixLoop() {
-    if (index >= count * 2) {
-      index -= count;
-      goTo(index, false);
-    }
+  // 🔁 Continuous autoplay
+  setInterval(() => {
+    goTo(position + 1);
+  }, 3000);
 
-    if (index < count) {
-      index += count;
-      goTo(index, false);
-    }
-  }
-
-  setInterval(() => goTo(index + 1), 3000);
-
+  // 🖱 Click support
   items.forEach((el, i) => {
-    el.addEventListener("click", () => goTo(i));
+    el.addEventListener("click", () => {
+      goTo(i);
+    });
   });
 
-  goTo(index, false);
+  // Init
+  goTo(position, false);
 });
