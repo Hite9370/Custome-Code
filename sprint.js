@@ -777,228 +777,83 @@ dragArea.addEventListener("mouseleave", () => {
 // });
 
 
-// window.addEventListener("load", () => {
-//     const list = document.querySelector(".home-work_card-list");
-//     const wrapper = document.querySelector(".home-work_card-image-wrapper");
-//     const listWrap = document.querySelector(".home-work_card-list-wrap");
-//     const rightWrap = document.querySelector(".home-work_card-right-wrap");
-
-//     // 1. Setup the Triple Loop (Original + Clone + Clone)
-//     const originalHTML = list.innerHTML;
-//     const originalImgHTML = wrapper.innerHTML;
-    
-//     list.innerHTML = originalHTML + originalHTML + originalHTML;
-//     wrapper.innerHTML = originalImgHTML + originalImgHTML + originalImgHTML;
-
-//     let items = Array.from(document.querySelectorAll(".home-work_card-list-item"));
-//     let cards = Array.from(document.querySelectorAll(".home-work_card-image-wrap"));
-    
-//     const count = items.length / 3; // The actual number of unique items
-//     let index = count; // Start at the first item of the middle set
-//     let isMoving = false;
-
-//     function goTo(i, animate = true) {
-//         if (isMoving && animate) return;
-//         index = i;
-
-//         // Update Active States based on the real index
-//         items.forEach((item, idx) => {
-//             item.classList.toggle("active", idx % count === index % count);
-//         });
-
-//         // Calculate positions
-//         const textItem = items[index];
-//         const cardItem = cards[index];
-
-//         // Vertical Logic for Text
-//         const textY = -(textItem.offsetTop - (listWrap.clientHeight / 2) + (textItem.clientHeight / 2));
-        
-//         // Vertical Logic for Images
-//         const imgY = -(cardItem.offsetTop - (rightWrap.clientHeight / 2) + (cardItem.clientHeight / 2));
-
-//         if (animate) {
-//             isMoving = true;
-//             gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
-//             gsap.to(wrapper, { 
-//                 y: imgY, 
-//                 duration: 1.2, 
-//                 ease: "power3.inOut",
-//                 onComplete: () => {
-//                     isMoving = false;
-//                     checkBoundary();
-//                 }
-//             });
-//         } else {
-//             gsap.set(list, { y: textY });
-//             gsap.set(wrapper, { y: imgY });
-//         }
-//     }
-
-//     // This function handles the "Invisble Jump" to keep it infinite
-//     function checkBoundary() {
-//         // If we reach the start of the 3rd set, jump back to the start of the 2nd set
-//         if (index >= count * 2) {
-//             index = count;
-//             goTo(index, false);
-//         }
-//         // If we go backwards to the 1st set, jump to the 2nd set
-//         if (index < count) {
-//             index = count * 2 - 1;
-//             goTo(index, false);
-//         }
-//     }
-
-//     // Auto Loop
-//     let autoPlay = setInterval(() => {
-//         goTo(index + 1);
-//     }, 3000);
-
-//     // Click to Navigate
-//     items.forEach((item, i) => {
-//         item.addEventListener("click", () => {
-//             clearInterval(autoPlay);
-//             goTo(i);
-//         });
-//     });
-
-//     // Initialize
-//     goTo(index, false);
-// });
-
-
-
-
 window.addEventListener("load", () => {
     const list = document.querySelector(".home-work_card-list");
     const wrapper = document.querySelector(".home-work_card-image-wrapper");
     const listWrap = document.querySelector(".home-work_card-list-wrap");
     const rightWrap = document.querySelector(".home-work_card-right-wrap");
 
-    // Clone 3x
+    // 1. Setup the Triple Loop (Original + Clone + Clone)
     const originalHTML = list.innerHTML;
     const originalImgHTML = wrapper.innerHTML;
-
+    
     list.innerHTML = originalHTML + originalHTML + originalHTML;
     wrapper.innerHTML = originalImgHTML + originalImgHTML + originalImgHTML;
 
-    const items = Array.from(document.querySelectorAll(".home-work_card-list-item"));
-    const cards = Array.from(document.querySelectorAll(".home-work_card-image-wrap"));
-
-    const count = items.length / 3;
-    let index = count;
+    let items = Array.from(document.querySelectorAll(".home-work_card-list-item"));
+    let cards = Array.from(document.querySelectorAll(".home-work_card-image-wrap"));
+    
+    const count = items.length / 3; // The actual number of unique items
+    let index = count; // Start at the first item of the middle set
     let isMoving = false;
 
-    gsap.config({ force3D: true });
-
     function goTo(i, animate = true) {
-    if (isMoving && animate) return;
+        if (isMoving && animate) return;
+        index = i;
 
-    index = i;
-    const realIndex = index % count;
-
-    items.forEach((item, idx) => {
-        item.classList.toggle("active", idx % count === realIndex);
-    });
-
-    const isMobile = window.innerWidth <= 767;
-
-    const textItemHeight = items[0].offsetHeight + 34;
-    const cardItemSize = isMobile
-        ? cards[0].offsetWidth + 20   // horizontal gap
-        : cards[0].offsetHeight + 40; // vertical gap
-
-    const textY =
-        -(index * textItemHeight) +
-        (listWrap.clientHeight / 2 - textItemHeight / 2);
-
-    if (animate) {
-        isMoving = true;
-
-        gsap.to(list, {
-            y: textY,
-            duration: 1,
-            ease: "power3.inOut"
+        // Update Active States based on the real index
+        items.forEach((item, idx) => {
+            item.classList.toggle("active", idx % count === index % count);
         });
-if (isMobile) {
 
-    const card = cards[index];
-    const cardRect = card.getBoundingClientRect();
-    const wrapRect = rightWrap.getBoundingClientRect();
+        // Calculate positions
+        const textItem = items[index];
+        const cardItem = cards[index];
 
-    const currentX = gsap.getProperty(wrapper, "x");
+        // Vertical Logic for Text
+        const textY = -(textItem.offsetTop - (listWrap.clientHeight / 2) + (textItem.clientHeight / 2));
+        
+        // Vertical Logic for Images
+        const imgY = -(cardItem.offsetTop - (rightWrap.clientHeight / 2) + (cardItem.clientHeight / 2));
 
-    const imgX =
-        currentX +
-        (wrapRect.left + wrapRect.width / 2) -
-        (cardRect.left + cardRect.width / 2);
-
-    gsap.to(wrapper, {
-        x: imgX,
-        duration: 1.2,
-        ease: "power3.inOut",
-        onComplete: () => {
-            isMoving = false;
-            checkBoundary();
-        }
-    });
-
-} else {
-            const imgY =
-                -(index * cardItemSize) +
-                (rightWrap.clientHeight / 2 - cards[0].offsetHeight / 2);
-
-            gsap.to(wrapper, {
-                y: imgY,
-                duration: 1.2,
+        if (animate) {
+            isMoving = true;
+            gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
+            gsap.to(wrapper, { 
+                y: imgY, 
+                duration: 1.2, 
                 ease: "power3.inOut",
                 onComplete: () => {
                     isMoving = false;
                     checkBoundary();
                 }
             });
-        }
-
-    } else {
-        gsap.set(list, { y: textY });
-
-if (isMobile) {
-
-    const card = cards[index];
-
-    const imgX =
-        -(card.offsetLeft) +
-        (rightWrap.clientWidth / 2 - card.clientWidth / 2);
-
-    gsap.set(wrapper, { x: imgX });
-
-} else {
-            const imgY =
-                -(index * cardItemSize) +
-                (rightWrap.clientHeight / 2 - cards[0].offsetHeight / 2);
-
+        } else {
+            gsap.set(list, { y: textY });
             gsap.set(wrapper, { y: imgY });
         }
     }
-}
 
+    // This function handles the "Invisble Jump" to keep it infinite
     function checkBoundary() {
+        // If we reach the start of the 3rd set, jump back to the start of the 2nd set
         if (index >= count * 2) {
-            index -= count;
+            index = count;
             goTo(index, false);
         }
-
+        // If we go backwards to the 1st set, jump to the 2nd set
         if (index < count) {
-            index += count;
+            index = count * 2 - 1;
             goTo(index, false);
         }
     }
 
-    // Auto play
+    // Auto Loop
     let autoPlay = setInterval(() => {
         goTo(index + 1);
     }, 3000);
 
-    // Click interaction
+    // Click to Navigate
     items.forEach((item, i) => {
         item.addEventListener("click", () => {
             clearInterval(autoPlay);
@@ -1006,9 +861,13 @@ if (isMobile) {
         });
     });
 
-    // Init
+    // Initialize
     goTo(index, false);
 });
+
+
+
+
 
 
 
