@@ -162,6 +162,5 @@
   /* MOBILE */
   @media (max-width: 767px) {
     .work { flex-direction: column; }
-    .work__list-mask { height: 50px; -webkit-mask-image: none; mask-image: none; }
     .work__media { flex-direction: row; gap: 20px; }    
   }
