@@ -1482,7 +1482,6 @@ document.addEventListener("DOMContentLoaded", function () {
 //   goTo(index, false);
 // });
 
-
 window.addEventListener("load", () => {
   const list = document.querySelector(".work__list");
   const media = document.querySelector(".work__media");
