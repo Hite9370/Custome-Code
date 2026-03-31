@@ -1522,8 +1522,19 @@ window.addEventListener("load", () => {
     let mediaPos = {};
 
     if (isMobile) {
-      const mediaX = -(activeCard.offsetLeft - (window.innerWidth / 2) + (activeCard.clientWidth / 2));
-      mediaPos = { x: mediaX, y: 0 }; // Clear Y axis
+    
+      const cardRect = activeCard.getBoundingClientRect();
+      const wrapRect = rightWrap.getBoundingClientRect();
+    
+      const currentX = gsap.getProperty(media, "x") || 0;
+    
+      const mediaX =
+        currentX +
+        (wrapRect.left + wrapRect.width / 2) -
+        (cardRect.left + cardRect.width / 2);
+    
+      mediaPos = { x: mediaX, y: 0 };
+    
     } else {
       const mediaY = -(activeCard.offsetTop - (rightWrap.clientHeight / 2) + (activeCard.clientHeight / 2));
       mediaPos = { y: mediaY, x: 0 }; // Clear X axis
