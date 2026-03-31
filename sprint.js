@@ -1483,64 +1483,63 @@ document.addEventListener("DOMContentLoaded", function () {
 // });
 
 
-
 window.addEventListener("load", () => {
   const list = document.querySelector(".work__list");
   const media = document.querySelector(".work__media");
   const listMask = document.querySelector(".work__list-mask");
   const rightWrap = document.querySelector(".work__right");
 
-  // Triple the content for infinite scrolling
-  const originalList = list.innerHTML;
-  const originalMedia = media.innerHTML;
-  list.innerHTML = originalList + originalList + originalList;
-  media.innerHTML = originalMedia + originalMedia + originalMedia;
+  // 1. Setup Triple Loop
+  const rawList = list.innerHTML;
+  const rawMedia = media.innerHTML;
+  list.innerHTML = rawList + rawList + rawList;
+  media.innerHTML = rawMedia + rawMedia + rawMedia;
 
   let items = Array.from(document.querySelectorAll(".work__item"));
   let cards = Array.from(document.querySelectorAll(".work__card"));
   const count = items.length / 3;
 
-  let currentIndex = count; // Start at the first item of the second set
+  let index = count; 
   let isMoving = false;
   let autoTimer;
 
-  function goTo(index, animate = true) {
+  function goTo(targetIndex, animate = true) {
     if (isMoving && animate) return;
     
-    currentIndex = index;
+    index = targetIndex;
     const isMobile = window.innerWidth <= 767;
 
-    // Highlight active item
+    // Set active states
     items.forEach((item, i) => {
-      item.classList.toggle("active", i % count === currentIndex % count);
+      item.classList.toggle("active", i % count === index % count);
     });
 
-    // Calculate Text Position (Always Vertical)
-    const activeText = items[currentIndex];
+    // --- TEXT POS ---
+    const activeText = items[index];
     const textY = -(activeText.offsetTop - (listMask.clientHeight / 2) + (activeText.clientHeight / 2));
 
-    // Calculate Media Position
-    const activeCard = cards[currentIndex];
+    // --- MEDIA POS ---
+    const activeCard = cards[index];
     let mediaPos = {};
 
     if (isMobile) {
       const mediaX = -(activeCard.offsetLeft - (window.innerWidth / 2) + (activeCard.clientWidth / 2));
-      mediaPos = { x: mediaX, y: 0 };
+      mediaPos = { x: mediaX, y: 0 }; // Clear Y axis
     } else {
       const mediaY = -(activeCard.offsetTop - (rightWrap.clientHeight / 2) + (activeCard.clientHeight / 2));
-      mediaPos = { y: mediaY, x: 0 };
+      mediaPos = { y: mediaY, x: 0 }; // Clear X axis
     }
 
     if (animate) {
       isMoving = true;
-      gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
+      gsap.to(list, { y: textY, duration: 0.8, ease: "power2.inOut" });
       gsap.to(media, {
         ...mediaPos,
-        duration: 1.2,
-        ease: "power3.inOut",
+        duration: 1,
+        ease: "power2.inOut",
         onComplete: () => {
           isMoving = false;
-          checkReset();
+          checkLoop();
         }
       });
     } else {
@@ -1549,20 +1548,20 @@ window.addEventListener("load", () => {
     }
   }
 
-  function checkReset() {
-    // If we passed the end of the middle set or the beginning, jump back instantly
-    if (currentIndex >= count * 2) {
-      currentIndex = count;
-      goTo(currentIndex, false);
-    } else if (currentIndex < count) {
-      currentIndex = count * 2 - 1;
-      goTo(currentIndex, false);
+  function checkLoop() {
+    // Invisible jump to the center set
+    if (index >= count * 2) {
+      index = count;
+      goTo(index, false);
+    } else if (index < count) {
+      index = (count * 2) - 1;
+      goTo(index, false);
     }
   }
 
   function startAuto() {
     autoTimer = setInterval(() => {
-      goTo(currentIndex + 1);
+      goTo(index + 1);
     }, 3000);
   }
 
@@ -1575,12 +1574,13 @@ window.addEventListener("load", () => {
     });
   });
 
-  // Handle Resize
+  // Handle Window Resize
   window.addEventListener("resize", () => {
-    goTo(currentIndex, false);
+    gsap.set([list, media], { clearProps: "all" });
+    goTo(index, false);
   });
 
-  // Init
-  goTo(currentIndex, false);
+  // Initialization
+  goTo(index, false);
   startAuto();
 });
