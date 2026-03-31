@@ -1484,125 +1484,103 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 window.addEventListener("load", () => {
-  // Elements
   const list = document.querySelector(".work__list");
   const media = document.querySelector(".work__media");
   const listMask = document.querySelector(".work__list-mask");
-  const right = document.querySelector(".work__right");
+  const rightWrap = document.querySelector(".work__right");
 
-  // Clone 3x for seamless infinite loop
+  // Triple the content for infinite scrolling
   const originalList = list.innerHTML;
   const originalMedia = media.innerHTML;
+  list.innerHTML = originalList + originalList + originalList;
+  media.innerHTML = originalMedia + originalMedia + originalMedia;
 
-  list.innerHTML = originalList.repeat(3);
-  media.innerHTML = originalMedia.repeat(3);
-
-  const items = [...document.querySelectorAll(".work__item")];
-  const cards = [...document.querySelectorAll(".work__card")];
+  let items = Array.from(document.querySelectorAll(".work__item"));
+  let cards = Array.from(document.querySelectorAll(".work__card"));
   const count = items.length / 3;
 
-  let position = 0;       // continuous index
-  let moving = false;     // animation lock
-  let autoTimer;          // auto-scroll timer
+  let currentIndex = count; // Start at the first item of the second set
+  let isMoving = false;
+  let autoTimer;
 
-  gsap.config({ force3D: true });
+  function goTo(index, animate = true) {
+    if (isMoving && animate) return;
+    
+    currentIndex = index;
+    const isMobile = window.innerWidth <= 767;
 
-  // -----------------------
-  // Main GoTo Function
-  // -----------------------
-  function goTo(pos, animate = true) {
-    if (moving && animate) return;
-
-    position = pos;
-    const realIndex = ((position % count) + count) % count;
-
-    // Update active class
-    items.forEach((el, idx) => {
-      el.classList.toggle("active", idx % count === realIndex);
+    // Highlight active item
+    items.forEach((item, i) => {
+      item.classList.toggle("active", i % count === currentIndex % count);
     });
 
-    const isMobile = window.innerWidth <= 767;
-    const itemH = items[0].offsetHeight + 34;
-    const cardGap = 40; // vertical gap
-    const horizontalGap = 20; // mobile horizontal gap
-    const visualIndex = position + count; // always render middle set
+    // Calculate Text Position (Always Vertical)
+    const activeText = items[currentIndex];
+    const textY = -(activeText.offsetTop - (listMask.clientHeight / 2) + (activeText.clientHeight / 2));
 
-    // Calculate text position
-    const textY = -(visualIndex * itemH) + (listMask.clientHeight / 2 - itemH / 2);
+    // Calculate Media Position
+    const activeCard = cards[currentIndex];
+    let mediaPos = {};
+
+    if (isMobile) {
+      const mediaX = -(activeCard.offsetLeft - (window.innerWidth / 2) + (activeCard.clientWidth / 2));
+      mediaPos = { x: mediaX, y: 0 };
+    } else {
+      const mediaY = -(activeCard.offsetTop - (rightWrap.clientHeight / 2) + (activeCard.clientHeight / 2));
+      mediaPos = { y: mediaY, x: 0 };
+    }
 
     if (animate) {
-      moving = true;
+      isMoving = true;
       gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
-
-      if (isMobile) {
-        const card = cards[visualIndex];
-        const cRect = card.getBoundingClientRect();
-        const wRect = right.getBoundingClientRect();
-        const currentX = gsap.getProperty(media, "x") || 0;
-
-        const x = currentX + (wRect.left + wRect.width/2) - (cRect.left + cRect.width/2);
-
-        gsap.to(media, {
-          x,
-          duration: 1.2,
-          ease: "power3.inOut",
-          onComplete: () => moving = false
-        });
-      } else {
-        const cardH = cards[0].offsetHeight + cardGap;
-        const y = -(visualIndex * cardH) + (right.clientHeight / 2 - cards[0].offsetHeight / 2);
-
-        gsap.to(media, {
-          y,
-          duration: 1.2,
-          ease: "power3.inOut",
-          onComplete: () => moving = false
-        });
-      }
-
+      gsap.to(media, {
+        ...mediaPos,
+        duration: 1.2,
+        ease: "power3.inOut",
+        onComplete: () => {
+          isMoving = false;
+          checkReset();
+        }
+      });
     } else {
-      // Set instantly
       gsap.set(list, { y: textY });
+      gsap.set(media, mediaPos);
     }
   }
 
-  // -----------------------
-  // Auto Scroll Loop
-  // -----------------------
-  function loopAutoScroll() {
-    autoTimer = setTimeout(() => {
-      goTo(position + 1);
-      loopAutoScroll();
+  function checkReset() {
+    // If we passed the end of the middle set or the beginning, jump back instantly
+    if (currentIndex >= count * 2) {
+      currentIndex = count;
+      goTo(currentIndex, false);
+    } else if (currentIndex < count) {
+      currentIndex = count * 2 - 1;
+      goTo(currentIndex, false);
+    }
+  }
+
+  function startAuto() {
+    autoTimer = setInterval(() => {
+      goTo(currentIndex + 1);
     }, 3000);
   }
 
-  // Start auto-scroll
-  loopAutoScroll();
-
-  // -----------------------
-  // Click Handling
-  // -----------------------
-  items.forEach((el, i) => {
-    el.addEventListener("click", () => {
-      clearTimeout(autoTimer); // reset timer on click
-
-      const realIndex = i % count;
-      const currentCycle = Math.round(position / count) * count;
-      let target = currentCycle + realIndex;
-
-      // Move to nearest loop position
-      if (target - position > count / 2) target -= count;
-      if (position - target > count / 2) target += count;
-
-      goTo(target);
-      loopAutoScroll(); // restart auto-scroll
+  // Click interaction
+  items.forEach((item, i) => {
+    item.addEventListener("click", () => {
+      clearInterval(autoTimer);
+      goTo(i);
+      startAuto();
     });
   });
 
-  // -----------------------
+  // Handle Resize
+  window.addEventListener("resize", () => {
+    goTo(currentIndex, false);
+  });
+
   // Init
-  // -----------------------
-  goTo(position, false);
+  goTo(currentIndex, false);
+  startAuto();
 });
