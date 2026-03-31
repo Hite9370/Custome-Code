@@ -1486,12 +1486,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 window.addEventListener("load", () => {
+  // Elements
   const list = document.querySelector(".work__list");
   const media = document.querySelector(".work__media");
   const listMask = document.querySelector(".work__list-mask");
   const right = document.querySelector(".work__right");
 
-  // Clone 3x
+  // Clone 3x for seamless infinite loop
   const originalList = list.innerHTML;
   const originalMedia = media.innerHTML;
 
@@ -1500,110 +1501,108 @@ window.addEventListener("load", () => {
 
   const items = [...document.querySelectorAll(".work__item")];
   const cards = [...document.querySelectorAll(".work__card")];
-
   const count = items.length / 3;
 
-  let position = 0; // 🔥 continuous index
-  let moving = false;
+  let position = 0;       // continuous index
+  let moving = false;     // animation lock
+  let autoTimer;          // auto-scroll timer
 
   gsap.config({ force3D: true });
 
+  // -----------------------
+  // Main GoTo Function
+  // -----------------------
   function goTo(pos, animate = true) {
     if (moving && animate) return;
 
     position = pos;
-
-    // Safe modulo
     const realIndex = ((position % count) + count) % count;
 
-    // Active state
+    // Update active class
     items.forEach((el, idx) => {
       el.classList.toggle("active", idx % count === realIndex);
     });
 
     const isMobile = window.innerWidth <= 767;
-
     const itemH = items[0].offsetHeight + 34;
+    const cardGap = 40; // vertical gap
+    const horizontalGap = 20; // mobile horizontal gap
+    const visualIndex = position + count; // always render middle set
 
-    // Always render from middle set
-    const visualIndex = position + count;
-
-    const textY =
-      -(visualIndex * itemH) +
-      (listMask.clientHeight / 2 - itemH / 2);
+    // Calculate text position
+    const textY = -(visualIndex * itemH) + (listMask.clientHeight / 2 - itemH / 2);
 
     if (animate) {
       moving = true;
-
-      gsap.to(list, {
-        y: textY,
-        duration: 1,
-        ease: "power3.inOut"
-      });
+      gsap.to(list, { y: textY, duration: 1, ease: "power3.inOut" });
 
       if (isMobile) {
         const card = cards[visualIndex];
-
         const cRect = card.getBoundingClientRect();
         const wRect = right.getBoundingClientRect();
+        const currentX = gsap.getProperty(media, "x") || 0;
 
-        const currentX = gsap.getProperty(media, "x");
-
-        const x =
-          currentX +
-          (wRect.left + wRect.width / 2) -
-          (cRect.left + cRect.width / 2);
+        const x = currentX + (wRect.left + wRect.width/2) - (cRect.left + cRect.width/2);
 
         gsap.to(media, {
           x,
           duration: 1.2,
           ease: "power3.inOut",
-          onComplete: () => (moving = false)
+          onComplete: () => moving = false
         });
-
       } else {
-        const cardH = cards[0].offsetHeight + 40;
-
-        const y =
-          -(visualIndex * cardH) +
-          (right.clientHeight / 2 - cards[0].offsetHeight / 2);
+        const cardH = cards[0].offsetHeight + cardGap;
+        const y = -(visualIndex * cardH) + (right.clientHeight / 2 - cards[0].offsetHeight / 2);
 
         gsap.to(media, {
           y,
           duration: 1.2,
           ease: "power3.inOut",
-          onComplete: () => (moving = false)
+          onComplete: () => moving = false
         });
       }
 
     } else {
+      // Set instantly
       gsap.set(list, { y: textY });
     }
   }
 
-  // 🔁 Continuous autoplay
-  setInterval(() => {
-    goTo(position + 1);
-  }, 3000);
+  // -----------------------
+  // Auto Scroll Loop
+  // -----------------------
+  function loopAutoScroll() {
+    autoTimer = setTimeout(() => {
+      goTo(position + 1);
+      loopAutoScroll();
+    }, 3000);
+  }
 
-  // 🖱 Click support
+  // Start auto-scroll
+  loopAutoScroll();
+
+  // -----------------------
+  // Click Handling
+  // -----------------------
   items.forEach((el, i) => {
     el.addEventListener("click", () => {
-      
+      clearTimeout(autoTimer); // reset timer on click
+
       const realIndex = i % count;
-  
-      // Find nearest loop position
       const currentCycle = Math.round(position / count) * count;
       let target = currentCycle + realIndex;
-  
-      // Adjust to shortest direction
+
+      // Move to nearest loop position
       if (target - position > count / 2) target -= count;
       if (position - target > count / 2) target += count;
-  
+
       goTo(target);
+      loopAutoScroll(); // restart auto-scroll
     });
   });
 
+  // -----------------------
   // Init
+  // -----------------------
   goTo(position, false);
 });
