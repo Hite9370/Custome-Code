@@ -151,7 +151,6 @@
 
   /* --- RIGHT SIDE --- */
   .work__right {
-    width: 60%;
     height: 100vh;
     display: flex;
     align-items: flex-start; /* Math starts at 0 top */
