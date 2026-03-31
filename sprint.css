@@ -130,44 +130,22 @@
 .work__media {
   display: flex;
   flex-direction: column;
-  gap: 40px;
 }
 
 .work__card {
-  max-width: 550px;
+
   flex-shrink: 0;
 }
 
-.work__card img {
-  width: 100%;
-  border-radius: 20px;
-}
 
 /* MOBILE */
 @media (max-width: 767px) {
   .work { flex-direction: column; }
 
-  .work__left,
-  .work__right {
-    width: 100%;
-  }
-
-  .work__left {
-    height: 35vh;
-    padding: 20px;
-  }
-
-  .work__right {
-    height: 65vh;
-  }
-
+  
   .work__media {
     flex-direction: row;
     align-items: center;
   }
 
-  .work__card {
-    min-width: 60vw;
-    margin: 0 10px;
-  }
 }
