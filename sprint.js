@@ -1589,7 +1589,18 @@ window.addEventListener("load", () => {
   // 🖱 Click support
   items.forEach((el, i) => {
     el.addEventListener("click", () => {
-      goTo(i);
+      
+      const realIndex = i % count;
+  
+      // Find nearest loop position
+      const currentCycle = Math.round(position / count) * count;
+      let target = currentCycle + realIndex;
+  
+      // Adjust to shortest direction
+      if (target - position > count / 2) target -= count;
+      if (position - target > count / 2) target += count;
+  
+      goTo(target);
     });
   });
 
