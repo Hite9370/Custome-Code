@@ -119,50 +119,10 @@
 
 
 
-/* LAYOUT */
-.work {
-  display: flex;
-  overflow: hidden;
-}
-
-.work__left {
-  width: 40%;
-  display: flex;
-  align-items: center;
-}
-
-.work__right {
-  width: 60%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
-
 /* LIST */
 .work__list-mask {
-  height: 400px;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
-}
-
-.work__list {
-  display: flex;
-  flex-direction: column;
-  gap: 34px;
-}
-
-.work__item {
-  font-size: 28px;
-  opacity: 0.2;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-.work__item.active {
-  opacity: 1;
-  font-weight: bold;
 }
 
 /* IMAGES */
