@@ -188,7 +188,7 @@
 
     .work__list-mask { 
       display: flex;
-      align-items: center;
+      /* align-items: center; */
     }
 
     .work__media { 
