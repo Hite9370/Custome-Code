@@ -1,7 +1,15 @@
-.action_card-image, .who-card-wrap {
+.action_card-image{
   transition: transform 0.4s ease;
 }
 
-.action_card-wrapper:hover .action_card-image, .who-card-wrap:hover .action_card-image {
+.action_card-wrapper:hover .action_card-image{
+  transform: scale(1.08);
+}
+
+.who-card-wrap {
+  transition: transform 0.4s ease;
+}
+
+.who-card-wrap:hover .action_card-image {
   transform: scale(1.08);
 }
