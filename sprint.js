@@ -4,7 +4,10 @@
       slidesPerView: 4,
       spaceBetween: 16,
 
-
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
       // Responsive
       breakpoints: {
         0: {
